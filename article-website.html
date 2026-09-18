@@ -1,0 +1,4666 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Website</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(-45deg, #1e3c72, #2a5298, #6a11cb, #2575fc);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.8s ease, color 0.4s ease;
+            overflow-x: hidden;
+            position: relative;
+            opacity: 0;
+            animation: pageFadeIn 0.8s ease forwards, gradient 10s ease infinite;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body.theme-blue { background: linear-gradient(-45deg, #1e3c72, #2a5298, #6a11cb, #2575fc); background-size: 400% 400%; }
+        body.theme-sunset { background: linear-gradient(-45deg, #b06ab3, #e08a6b, #d9776b, #c96a8a); background-size: 400% 400%; }
+        body.theme-night { background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e); background-size: 400% 400%; }
+        body.theme-matrix { background: linear-gradient(-45deg, #000000, #0f3d0f, #1a5c1a, #0f3d0f); background-size: 400% 400%; }
+        body.theme-pink { background: linear-gradient(-45deg, #c48ecf, #d9899a, #cf7b9e, #b98bc4); background-size: 400% 400%; }
+
+        body.mode-light { color: #1a1a2e; }
+        body.mode-light .container {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1a1a2e;
+        }
+        body.mode-light .container::before {
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.2), transparent);
+        }
+        body.mode-light .site-header { border-bottom-color: rgba(0, 0, 0, 0.1); }
+        body.mode-light .site-logo,
+        body.mode-light .site-name,
+        body.mode-light .lobby-title,
+        body.mode-light h2,
+        body.mode-light .article-title,
+        body.mode-light .featured-title,
+        body.mode-light .profile-name,
+        body.mode-light .author-name,
+        body.mode-light .comment-author,
+        body.mode-light .article-view-text,
+        body.mode-light .about-text,
+        body.mode-light .settings-section-title { color: #1a1a2e; }
+        body.mode-light .site-tagline,
+        body.mode-light .lobby-subtitle,
+        body.mode-light .article-desc,
+        body.mode-light .featured-desc,
+        body.mode-light .profile-status,
+        body.mode-light .author-status,
+        body.mode-light .article-date,
+        body.mode-light .comment-date,
+        body.mode-light .article-stats,
+        body.mode-light .featured-stats,
+        body.mode-light .music-option-desc { color: #666; }
+        body.mode-light .header-username,
+        body.mode-light .welcome-user { color: #1a1a2e; }
+        body.mode-light .welcome-user span { color: #d4a017; }
+        body.mode-light .header-avatar,
+        body.mode-light .sound-toggle,
+        body.mode-light .notif-btn,
+        body.mode-light .header-user {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.15);
+            color: #1a1a2e;
+        }
+        body.mode-light .header-user:hover,
+        body.mode-light .sound-toggle:hover,
+        body.mode-light .notif-btn:hover { background: rgba(0, 0, 0, 0.12); }
+        body.mode-light .btn { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); color: #fff; }
+        body.mode-light .btn:hover {
+            background: linear-gradient(135deg, #2d2d4e, #3a3a5e);
+            box-shadow: 0 0 16px rgba(26, 26, 46, 0.4), 0 0 32px rgba(26, 26, 46, 0.2);
+        }
+        body.mode-light .btn-back {
+            background: transparent;
+            color: #1a1a2e;
+            border-color: rgba(26, 26, 46, 0.4);
+        }
+        body.mode-light .btn-back:hover {
+            background: rgba(26, 26, 46, 0.1);
+            border-color: #1a1a2e;
+        }
+        body.mode-light .btn-logout {
+            background: rgba(200, 50, 50, 0.1);
+            color: #c83232;
+            border-color: rgba(200, 50, 50, 0.35);
+        }
+        body.mode-light .btn-logout:hover { background: rgba(200, 50, 50, 0.2); color: #8b1a1a; }
+        body.mode-light .btn-saved { background: linear-gradient(135deg, #ffd700, #ffb400); color: #1a1a2e; }
+        body.mode-light .article-card {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #1a1a2e;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        body.mode-light .article-card:hover {
+            background: #fff;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.15);
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        body.mode-light .article-cover-small {
+            background-color: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.mode-light .article-stats span {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.mode-light .article-card:hover .article-stats span {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        body.mode-light .article-title { color: #1a1a2e; }
+        body.mode-light .article-desc { color: #555; }
+        body.mode-light .article-date { color: #777; }
+        body.mode-light .article-stats { color: #777; }
+        body.mode-light .featured-card {
+            background: rgba(255, 255, 255, 0.75);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #1a1a2e;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        body.mode-light .featured-card:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.15);
+        }
+        body.mode-light .featured-title { color: #1a1a2e; }
+        body.mode-light .featured-desc { color: #555; }
+        body.mode-light .category-pill { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.15); color: #555; }
+        body.mode-light .category-pill:hover { background: rgba(0, 0, 0, 0.1); color: #1a1a2e; }
+        body.mode-light .search-input,
+        body.mode-light .filter-select,
+        body.mode-light .editor-field input,
+        body.mode-light .editor-field textarea,
+        body.mode-light .editor-field select,
+        body.mode-light .auth-field input,
+        body.mode-light .profile-input,
+        body.mode-light .comment-form textarea {
+            background: rgba(255, 255, 255, 0.8);
+            color: #1a1a2e;
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        body.mode-light .search-input:focus,
+        body.mode-light .filter-select:focus,
+        body.mode-light .editor-field input:focus,
+        body.mode-light .editor-field textarea:focus,
+        body.mode-light .auth-field input:focus,
+        body.mode-light .profile-input:focus,
+        body.mode-light .comment-form textarea:focus { background: #fff; border-color: #1a1a2e; }
+        body.mode-light .search-input::placeholder,
+        body.mode-light .editor-field input::placeholder,
+        body.mode-light .editor-field textarea::placeholder,
+        body.mode-light .auth-field input::placeholder,
+        body.mode-light .profile-input::placeholder,
+        body.mode-light .comment-form textarea::placeholder { color: #888; }
+        body.mode-light .filter-select option { background: #fff; color: #1a1a2e; }
+        body.mode-light .comment-item { background: rgba(255, 255, 255, 0.7); border-left-color: rgba(0, 0, 0, 0.15); }
+        body.mode-light .comment-text { color: #333; }
+        body.mode-light .comment-avatar { background: rgba(0, 0, 0, 0.06); }
+        body.mode-light .comment-form button { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); color: #fff; }
+        body.mode-light .article-view-stats button {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.15);
+            color: #1a1a2e;
+        }
+        body.mode-light .btn-bookmark {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.15);
+            color: #1a1a2e;
+        }
+        body.mode-light .profile-stat { background: rgba(0, 0, 0, 0.04); }
+        body.mode-light .author-stat { background: rgba(0, 0, 0, 0.04); }
+        body.mode-light .stats-chart { background: rgba(0, 0, 0, 0.04); }
+        body.mode-light .chart-title { color: #666; }
+        body.mode-light .chart-bar-label { color: #666; }
+        body.mode-light .achievement { background: rgba(0, 0, 0, 0.04); }
+        body.mode-light .achievement.earned {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 180, 0, 0.25));
+            border-color: rgba(255, 180, 0, 0.6);
+        }
+        body.mode-light .achievement-title { color: #666; }
+        body.mode-light .achievement.earned .achievement-title { color: #b8860b; }
+        body.mode-light .profile-edit-title { color: #666; }
+        body.mode-light .avatar-option { background: rgba(0, 0, 0, 0.05); }
+        body.mode-light .avatar-option:hover { background: rgba(0, 0, 0, 0.1); }
+        body.mode-light .avatar-option.selected { border-color: #1a1a2e; background: rgba(0, 0, 0, 0.1); }
+        body.mode-light .notif-panel {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1a1a2e;
+        }
+        body.mode-light .notif-item { background: rgba(0, 0, 0, 0.04); color: #1a1a2e; }
+        body.mode-light .notif-item-time { color: #888; }
+        body.mode-light .notif-title { color: #1a1a2e; }
+        body.mode-light .confirm-box {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1a1a2e;
+        }
+        body.mode-light .confirm-text { color: #666; }
+        body.mode-light .confirm-cancel {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1a1a2e;
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        body.mode-light .about-text p { background: rgba(0, 0, 0, 0.03); border-left-color: rgba(0, 0, 0, 0.15); }
+        body.mode-light .about-text .highlight { color: #1a1a2e; }
+        body.mode-light .fun-fact {
+            background: rgba(0, 0, 0, 0.04);
+            border-left-color: rgba(0, 0, 0, 0.2);
+            color: #555;
+        }
+        body.mode-light .fun-fact .fact-label { color: #888; }
+        body.mode-light .mode-switch { background: rgba(0, 0, 0, 0.05); }
+        body.mode-light .mode-btn { color: #666; }
+        body.mode-light .mode-btn.active { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); color: #fff; }
+        body.mode-light .mode-btn:hover:not(.active) { background: rgba(0, 0, 0, 0.08); color: #1a1a2e; }
+        body.mode-light .auth-tabs { background: rgba(0, 0, 0, 0.05); }
+        body.mode-light .auth-tab { color: #666; }
+        body.mode-light .auth-tab.active { background: #1a1a2e; color: #fff; }
+        body.mode-light .auth-tab:hover:not(.active) { background: rgba(0, 0, 0, 0.08); color: #1a1a2e; }
+        body.mode-light .auth-title {
+            background: linear-gradient(90deg, #1a1a2e, #666, #1a1a2e);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        body.mode-light .auth-subtitle { color: #666; }
+        body.mode-light .auth-field label { color: #666; }
+        body.mode-light .auth-btn { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); color: #fff; }
+        body.mode-light .volume-value { color: #666; }
+        body.mode-light .article-view-text { color: #333; }
+        body.mode-light .article-view h2 { color: #1a1a2e; }
+        body.mode-light .article-view-date { color: #888; }
+        body.mode-light .subscribe-btn { border-color: rgba(26, 26, 46, 0.4); color: #1a1a2e; }
+        body.mode-light .subscribe-btn:hover { background: rgba(26, 26, 46, 0.1); }
+        body.mode-light .article-action-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.15);
+            color: #1a1a2e;
+        }
+        body.mode-light .article-action-btn.danger { color: #c83232; border-color: rgba(200, 50, 50, 0.3); }
+        body.mode-light .cover-option { background-color: rgba(0, 0, 0, 0.05); }
+        body.mode-light .featured-cover { background-color: rgba(0, 0, 0, 0.05); }
+        body.mode-light .emoji-option { background: rgba(0, 0, 0, 0.05); }
+        body.mode-light .emoji-option.selected { border-color: #1a1a2e; background: rgba(0, 0, 0, 0.1); }
+        body.mode-light .author-link { color: #1a1a2e; background: rgba(0, 0, 0, 0.05); }
+        body.mode-light .author-link:hover { background: rgba(0, 0, 0, 0.1); }
+        body.mode-light .author-link-avatar { background: rgba(0, 0, 0, 0.08); }
+        body.mode-light .music-option { 
+            background: rgba(255, 255, 255, 0.75); 
+            color: #1a1a2e; 
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.mode-light .music-option:hover { background: rgba(255, 255, 255, 0.95); }
+        body.mode-light .music-option-name { color: #1a1a2e; }
+        body.mode-light .music-option-icon { background: rgba(0, 0, 0, 0.05); }
+        body.mode-light .settings-section-title { color: #1a1a2e; }
+
+        .floating-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .float-item {
+            position: absolute;
+            font-size: 60px;
+            opacity: 0.06;
+            user-select: none;
+            animation: floatAround linear infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes floatAround {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(30px, -40px) rotate(15deg) scale(1.1); }
+            50% { transform: translate(-20px, -80px) rotate(-10deg) scale(0.95); }
+            75% { transform: translate(40px, -40px) rotate(20deg) scale(1.05); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleRise linear infinite;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        }
+
+        @keyframes particleRise {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(30, 30, 50, 0.28);
+            backdrop-filter: blur(14px);
+            border-radius: 20px;
+            max-width: 620px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: max-width 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.6s ease,
+                        background 0.6s ease,
+                        color 0.5s ease,
+                        border-color 0.5s ease;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: containerIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+        }
+
+        @keyframes containerIn {
+            from { opacity: 0; transform: scale(0.95) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .container.wide {
+            max-width: 1140px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            pointer-events: none;
+        }
+
+        #main-content > div:not(.hidden) {
+            animation: screenSlideIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes screenSlideIn {
+            from { opacity: 0; transform: translateY(25px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        #main-content > div:not(.hidden) .btn,
+        #main-content > div:not(.hidden) .article-card,
+        #main-content > div:not(.hidden) .featured-card,
+        #main-content > div:not(.hidden) .profile-stat,
+        #main-content > div:not(.hidden) .achievement,
+        #main-content > div:not(.hidden) .comment-item,
+        #main-content > div:not(.hidden) .category-pill,
+        #main-content > div:not(.hidden) .theme-swatch,
+        #main-content > div:not(.hidden) .avatar-option,
+        #main-content > div:not(.hidden) .editor-field,
+        #main-content > div:not(.hidden) .auth-field,
+        #main-content > div:not(.hidden) .profile-input,
+        #main-content > div:not(.hidden) .comment-form,
+        #main-content > div:not(.hidden) .article-view,
+        #main-content > div:not(.hidden) .profile-card,
+        #main-content > div:not(.hidden) .author-card,
+        #main-content > div:not(.hidden) .author-stat,
+        #main-content > div:not(.hidden) .music-option,
+        #main-content > div:not(.hidden) .settings-section {
+            animation: elementIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        #main-content > div:not(.hidden) .btn:nth-child(1),
+        #main-content > div:not(.hidden) .editor-field:nth-child(1) { animation-delay: 0.05s; }
+        #main-content > div:not(.hidden) .btn:nth-child(2),
+        #main-content > div:not(.hidden) .editor-field:nth-child(2) { animation-delay: 0.1s; }
+        #main-content > div:not(.hidden) .btn:nth-child(3),
+        #main-content > div:not(.hidden) .editor-field:nth-child(3) { animation-delay: 0.15s; }
+        #main-content > div:not(.hidden) .btn:nth-child(4) { animation-delay: 0.2s; }
+        #main-content > div:not(.hidden) .btn:nth-child(5) { animation-delay: 0.25s; }
+        #main-content > div:not(.hidden) .btn:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes elementIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 40px 20px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .auth-logo { font-size: 56px; animation: lobbyFloat 4s ease-in-out infinite; }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #fff, #c8d4e3, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shineText 4s linear infinite;
+        }
+
+        @keyframes shineText {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .auth-subtitle { font-size: 13px; color: #c8d4e3; text-align: center; }
+        .auth-content { padding: 20px 40px 40px; text-align: center; }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 25px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: #c8d4e3;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .auth-tab.active { background: rgba(255, 255, 255, 0.9); color: #1e3c72; transform: scale(1.02); }
+        .auth-tab:hover:not(.active) { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+        .auth-field {
+            text-align: left;
+            margin-bottom: 14px;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 12px;
+            color: #c8d4e3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .auth-field input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .auth-field input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .auth-field input::placeholder { color: #9aa8bb; }
+        .auth-error { color: #ff8b8b; font-size: 13px; min-height: 20px; margin-bottom: 10px; text-align: center; }
+        .auth-error:not(:empty) { animation: shakeError 0.5s ease; }
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        .auth-info { color: #8bd4ff; font-size: 13px; min-height: 20px; margin-bottom: 10px; text-align: center; }
+
+        .auth-btn {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e3c72;
+            border: none;
+            padding: 15px 28px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            width: 100%;
+            max-width: 380px;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3);
+            background: #fff;
+        }
+
+        .auth-btn:active { transform: translateY(-1px) scale(0.98); }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            position: relative;
+            gap: 15px;
+        }
+
+        .site-header.hidden { display: none; }
+
+        .site-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .site-header-left:hover { opacity: 0.85; transform: translateX(3px); }
+
+        .site-logo {
+            font-size: 30px;
+            animation: logoPulse 3s ease-in-out infinite;
+            cursor: pointer;
+            display: inline-block;
+            user-select: none;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .site-logo.shake { animation: logoShake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+        @keyframes logoShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            10% { transform: translate(-4px, -2px) rotate(-15deg) scale(1.2); }
+            20% { transform: translate(4px, 2px) rotate(15deg) scale(1.25); }
+            30% { transform: translate(-4px, -2px) rotate(-12deg) scale(1.2); }
+            40% { transform: translate(4px, 2px) rotate(12deg) scale(1.2); }
+            50% { transform: translate(-3px, -1px) rotate(-8deg) scale(1.15); }
+            60% { transform: translate(3px, 1px) rotate(8deg) scale(1.1); }
+            70% { transform: translate(-2px, 0) rotate(-4deg) scale(1.05); }
+            80% { transform: translate(2px, 0) rotate(4deg) scale(1.02); }
+            90% { transform: translate(-1px, 0) rotate(-2deg) scale(1); }
+        }
+
+        .site-name { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+        .site-tagline { font-size: 12px; color: #c8d4e3; margin-top: 2px; }
+
+        .header-search {
+            flex-grow: 1;
+            max-width: 300px;
+            position: relative;
+        }
+
+        .header-search input {
+            width: 100%;
+            padding: 10px 16px 10px 38px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .header-search input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.02);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+
+        .header-search input::placeholder { color: #9aa8bb; }
+
+        .header-search::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        body.mode-light .header-search input {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1a1a2e;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.mode-light .header-search input:focus {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+
+        body.mode-light .header-search input::placeholder { color: #888; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .notif-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 18px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .notif-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1) rotate(8deg); }
+        .notif-btn:active { transform: scale(0.95); }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            box-shadow: 0 2px 6px rgba(255, 100, 100, 0.5);
+            animation: notifPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes notifPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 4px 14px 4px 4px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .header-user:hover { background: rgba(255, 255, 255, 0.18); transform: scale(1.05); }
+
+        .header-avatar {
+            font-size: 20px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .header-user:hover .header-avatar {
+            transform: rotate(10deg) scale(1.1);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .header-username {
+            font-size: 14px;
+            font-weight: 600;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sound-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 18px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sound-toggle:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
+        .sound-toggle:active { transform: scale(0.95); }
+        .sound-toggle.muted { opacity: 0.5; }
+
+        .content {
+            padding: 40px;
+            overflow-y: auto;
+            flex-grow: 1;
+            scrollbar-gutter: stable;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .content.hidden { display: none; }
+
+        .content::-webkit-scrollbar { width: 8px; }
+        .content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 10px; }
+
+        h2 { font-size: 24px; margin-bottom: 20px; }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3c72;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .btn:last-child { margin-bottom: 0; }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::after { left: 100%; }
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.2);
+            background: #fff;
+        }
+        .btn:active { transform: translateY(-1px) scale(0.98); }
+
+        .btn-back {
+            margin-top: 20px;
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #fff;
+            transform: translateX(-4px) scale(1.02);
+        }
+
+        .btn-small { padding: 12px 20px; font-size: 15px; }
+
+        .btn-saved {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 180, 0, 0.95));
+            color: #1e3c72;
+        }
+
+        .btn-saved:hover { 
+            background: linear-gradient(135deg, #ffd700, #ffb400);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-logout {
+            background: rgba(255, 100, 100, 0.15);
+            color: #ff8b8b;
+            border: 1px solid rgba(255, 100, 100, 0.4);
+            margin-top: 25px;
+            margin-bottom: 0;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 100, 100, 0.25);
+            color: #fff;
+            box-shadow: 0 0 16px rgba(255, 100, 100, 0.4);
+            transform: scale(1.02);
+        }
+
+        .btn-logout:active { transform: scale(0.98); }
+
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .confirm-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .confirm-box {
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px 28px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            transform: scale(0.85) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .confirm-overlay.show .confirm-box { transform: scale(1) translateY(0); }
+        .confirm-icon { font-size: 48px; margin-bottom: 15px; animation: lobbyFloat 3s ease-in-out infinite; }
+        .confirm-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        .confirm-text { font-size: 14px; color: #c8d4e3; line-height: 1.5; margin-bottom: 25px; }
+        .confirm-buttons { display: flex; gap: 10px; }
+
+        .confirm-btn {
+            flex: 1;
+            padding: 13px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .confirm-btn:hover { transform: translateY(-3px) scale(1.03); }
+        .confirm-btn:active { transform: translateY(0) scale(0.97); }
+
+        .confirm-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .confirm-cancel:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .confirm-ok {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: #fff;
+        }
+        .confirm-ok:hover { box-shadow: 0 6px 20px rgba(255, 100, 100, 0.5); }
+
+        .lobby { text-align: center; padding: 20px 0; position: relative; }
+
+        .lobby-logo {
+            font-size: 72px;
+            margin-bottom: 20px;
+            animation: lobbyFloat 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes lobbyFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(6deg); }
+        }
+
+        .lobby-title {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #fff, #c8d4e3, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shineText 4s linear infinite;
+        }
+
+        .lobby-subtitle { font-size: 15px; color: #c8d4e3; margin-bottom: 15px; }
+        .welcome-user { font-size: 14px; color: #fff; margin-bottom: 25px; font-weight: 500; }
+        .welcome-user span { color: #ffd700; }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .menu .btn { margin-bottom: 0; }
+
+        .fun-fact {
+            margin-top: 30px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border-left: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            font-size: 13px;
+            color: #c8d4e3;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+            animation: factGlow 5s ease-in-out infinite;
+        }
+
+        @keyframes factGlow {
+            0%, 100% { 
+                background: rgba(255, 255, 255, 0.06); 
+                border-left-color: rgba(255, 255, 255, 0.4);
+            }
+            50% { 
+                background: rgba(255, 255, 255, 0.1); 
+                border-left-color: rgba(255, 255, 255, 0.7);
+            }
+        }
+
+        .fun-fact .fact-label {
+            font-size: 11px;
+            color: #9aa8bb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .profile-card { text-align: center; max-width: 400px; margin: 0 auto; padding-bottom: 20px; }
+
+        .profile-avatar-big {
+            font-size: 90px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: lobbyFloat 4s ease-in-out infinite;
+        }
+
+        .profile-name { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+        .profile-status { font-size: 13px; color: #c8d4e3; margin-bottom: 25px; }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .profile-stat {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 14px 8px;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .profile-stat:hover { 
+            background: rgba(255, 255, 255, 0.12); 
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .profile-stat .num { font-size: 22px; font-weight: 700; display: block; margin-bottom: 4px; }
+        .profile-stat .lbl { font-size: 11px; color: #9aa8bb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .profile-edit-title {
+            font-size: 14px;
+            color: #c8d4e3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .stats-chart {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            color: #9aa8bb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 80px;
+            justify-content: space-around;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #c48ecf, #f093fb);
+            border-radius: 4px 4px 0 0;
+            min-height: 4px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            animation: barGrow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes barGrow {
+            from { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
+            to { opacity: 1; transform: scaleY(1); }
+        }
+
+        .chart-bar:hover { 
+            filter: brightness(1.3); 
+            transform: scaleY(1.05);
+            box-shadow: 0 0 12px rgba(240, 147, 251, 0.6);
+        }
+
+        .chart-bar-label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: #9aa8bb;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .chart-bar:hover .chart-bar-value { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .achievement {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .achievement.earned {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 180, 0, 0.15));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+        }
+
+        .achievement.locked { opacity: 0.4; }
+        .achievement:hover { 
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .achievement-icon { font-size: 26px; margin-bottom: 6px; }
+        .achievement-title { font-size: 10px; color: #c8d4e3; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.3; }
+        .achievement.earned .achievement-title { color: #ffd700; font-weight: 600; }
+
+        .avatar-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .avatar-option {
+            font-size: 28px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-option:hover { background: rgba(255, 255, 255, 0.18); transform: scale(1.15) rotate(8deg); }
+
+        .avatar-option.selected {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            animation: swatchPulse 2s ease-in-out infinite;
+            transform: scale(1.1);
+        }
+
+        .profile-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: inherit;
+            font-size: 16px;
+            text-align: center;
+            margin: 0 auto 20px;
+            display: block;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .profile-input::placeholder { color: #9aa8bb; }
+
+        /* ============ АВТОР ============ */
+        .author-card {
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+
+        .author-avatar-big {
+            font-size: 100px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: lobbyFloat 4s ease-in-out infinite;
+        }
+
+        .author-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .author-status {
+            font-size: 14px;
+            color: #c8d4e3;
+            margin-bottom: 25px;
+        }
+
+        .author-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .author-stat {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 16px 8px;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .author-stat:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .author-stat .num { font-size: 24px; font-weight: 700; display: block; margin-bottom: 4px; }
+        .author-stat .lbl { font-size: 11px; color: #9aa8bb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .author-subscribe-btn {
+            background: linear-gradient(135deg, #6bcb77, #4d96ff);
+            color: #fff;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            margin-bottom: 20px;
+            display: inline-block;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .author-subscribe-btn:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(107, 203, 119, 0.4);
+        }
+
+        .author-subscribe-btn.unsubscribed {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3c72;
+        }
+
+        .author-subscribe-btn.unsubscribed:hover {
+            background: #fff;
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .author-articles-title {
+            font-size: 15px;
+            color: #c8d4e3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .author-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .author-link:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateX(4px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .author-link-avatar {
+            font-size: 20px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .search-input::placeholder { color: #9aa8bb; }
+
+        .filter-select {
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .filter-select:hover { background: rgba(255, 255, 255, 0.14); }
+        .filter-select:focus { outline: none; border-color: rgba(255, 255, 255, 0.5); }
+        .filter-select option { background: #1e3c72; color: #fff; }
+
+        .category-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .category-pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #c8d4e3;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            font-family: inherit;
+        }
+
+        .category-pill:hover { 
+            background: rgba(255, 255, 255, 0.15); 
+            color: #fff;
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: #fff;
+            border-color: transparent;
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(245, 87, 108, 0.4);
+        }
+
+        .subscribe-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            margin: 15px auto;
+            display: block;
+        }
+
+        .subscribe-btn:hover { 
+            background: rgba(255, 255, 255, 0.1); 
+            border-color: #fff;
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .subscribe-btn.subscribed {
+            background: linear-gradient(135deg, #6bcb77, #4d96ff);
+            border-color: transparent;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .article-action-btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .article-action-btn:hover { 
+            background: rgba(255, 255, 255, 0.18); 
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .article-action-btn.danger { color: #ff8b8b; border-color: rgba(255, 100, 100, 0.4); }
+        .article-action-btn.danger:hover { background: rgba(255, 100, 100, 0.2); color: #fff; }
+
+        .cover-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .cover-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .cover-option:hover { transform: scale(1.15) rotate(4deg); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .cover-option.selected { 
+            border-color: #fff; 
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .notif-panel {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            max-width: 360px;
+            width: calc(100% - 40px);
+            max-height: 70vh;
+            overflow-y: auto;
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            z-index: 9000;
+            padding: 20px;
+            transform: translateX(calc(100% + 40px)) scale(0.95);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+        }
+
+        .notif-panel.show { transform: translateX(0) scale(1); opacity: 1; }
+
+        .notif-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-clear {
+            background: transparent;
+            border: none;
+            color: #9aa8bb;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .notif-clear:hover { color: #fff; transform: scale(1.1); }
+
+        .notif-empty {
+            color: #9aa8bb;
+            font-size: 13px;
+            text-align: center;
+            padding: 30px 10px;
+            font-style: italic;
+        }
+
+        .notif-item {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+            animation: notifIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notif-item:hover { background: rgba(255, 255, 255, 0.12); transform: translateX(-6px); }
+        .notif-item.unread { border-left: 3px solid #ffd700; }
+
+        @keyframes notifIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .notif-item-time { font-size: 11px; color: #9aa8bb; margin-top: 4px; }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .featured-left { grid-row: span 2; }
+
+        .featured-card {
+            background: rgba(255, 255, 255, 0.09);
+            border-radius: 18px;
+            padding: 26px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .featured-card:hover::before { opacity: 1; }
+
+        .featured-left .featured-card {
+            height: 100%;
+            min-height: 420px;
+            padding: 32px;
+        }
+
+        .featured-card:hover {
+            background: rgba(255, 255, 255, 0.16);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 22px 55px rgba(0, 0, 0, 0.35);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .featured-cover {
+            width: 100%;
+            height: 130px;
+            border-radius: 14px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .featured-card:hover .featured-cover { transform: scale(1.04); }
+
+        .featured-left .featured-cover { height: 200px; font-size: 72px; }
+
+        .featured-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            line-height: 1.35;
+        }
+
+        .featured-left .featured-title { font-size: 28px; margin-bottom: 14px; }
+
+        .featured-desc {
+            font-size: 13px;
+            color: #c8d4e3;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .featured-left .featured-desc { font-size: 15px; line-height: 1.6; }
+
+        .featured-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #9aa8bb;
+            margin-top: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .featured-stats span { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            transition: transform 0.25s ease;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+        .featured-card:hover .featured-stats span { 
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .featured-hot {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+            margin-left: auto;
+            animation: hotPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes hotPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* ============ СПИСОК СТАТЕЙ — ОБНОВЛЁННЫЙ ============ */
+        .articles {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            text-align: left;
+            padding: 4px 4px 8px 4px;
+        }
+
+        .article-card {
+            background: rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            padding: 20px 22px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            animation: cardIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.7s ease;
+            pointer-events: none;
+        }
+
+        .article-card:hover::before { transform: translateX(100%); }
+
+        .article-card:hover {
+            background: rgba(255, 255, 255, 0.16);
+            transform: translateX(10px) scale(1.01);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .article-cover-small {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            flex-shrink: 0;
+            background-color: rgba(255, 255, 255, 0.06);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .article-card:hover .article-cover-small { 
+            transform: scale(1.12) rotate(-6deg); 
+        }
+
+        .article-emoji {
+            font-size: 38px;
+            flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .article-card:hover .article-emoji { 
+            transform: scale(1.2) rotate(10deg); 
+        }
+
+        .article-info { flex-grow: 1; min-width: 0; }
+
+        .article-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #fff;
+            line-height: 1.35;
+            letter-spacing: 0.2px;
+        }
+
+        .article-desc {
+            font-size: 13px;
+            color: #c8d4e3;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .article-date {
+            font-size: 11px;
+            color: #9aa8bb;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .article-stats {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #9aa8bb;
+            margin-top: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .article-stats span { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            transition: transform 0.25s ease;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 8px;
+        }
+
+        .article-card:hover .article-stats span { 
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-bookmark {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            align-self: center;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .btn-bookmark:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.2) rotate(-8deg); }
+        .btn-bookmark:active { transform: scale(0.95); }
+        .btn-bookmark.saved { 
+            background: linear-gradient(135deg, #ffd700, #ffb400); 
+            color: #1e3c72;
+        }
+
+        .article-view {
+            text-align: left;
+            max-width: 700px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+
+        .article-view-cover {
+            width: 100%;
+            height: 200px;
+            border-radius: 16px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            background-color: rgba(255, 255, 255, 0.05);
+            animation: articleEmojiIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes articleEmojiIn {
+            from { opacity: 0; transform: scale(0.7) rotate(-15deg); }
+            to { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        .article-view h2 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .article-view-date {
+            text-align: center;
+            font-size: 12px;
+            color: #9aa8bb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .article-view-stats {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #c8d4e3;
+            margin-bottom: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .article-view-stats button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            font-family: inherit;
+        }
+
+        .article-view-stats button:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .article-view-stats button.liked {
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            border-color: transparent;
+            animation: likePulse 0.6s ease;
+        }
+
+        @keyframes likePulse {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .article-view-stats button.bookmarked {
+            background: linear-gradient(135deg, #ffd700, #ffb400);
+            color: #1e3c72;
+            border-color: transparent;
+        }
+
+        .article-view-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #e8eef7;
+        }
+
+        .article-view-text p {
+            margin-bottom: 16px;
+            animation: paragraphIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes paragraphIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .article-view-text p:nth-child(1) { animation-delay: 0.25s; }
+        .article-view-text p:nth-child(2) { animation-delay: 0.3s; }
+        .article-view-text p:nth-child(3) { animation-delay: 0.35s; }
+        .article-view-text p:nth-child(4) { animation-delay: 0.4s; }
+        .article-view-text p:nth-child(5) { animation-delay: 0.45s; }
+        .article-view-text p:nth-child(6) { animation-delay: 0.5s; }
+        .article-view-text p:nth-child(7) { animation-delay: 0.55s; }
+        .article-view-text p:nth-child(8) { animation-delay: 0.6s; }
+        .article-view-text p:nth-child(9) { animation-delay: 0.65s; }
+        .article-view-text p:nth-child(10) { animation-delay: 0.7s; }
+        .article-view-text p:nth-child(11) { animation-delay: 0.75s; }
+        .article-view-text p:nth-child(12) { animation-delay: 0.8s; }
+
+        .comments-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comment-name-readonly {
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #9aa8bb;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment-name-readonly .avatar-mini { font-size: 16px; }
+
+        .comment-name-readonly .hint {
+            margin-left: auto;
+            font-size: 11px;
+            font-style: italic;
+        }
+
+        .comment-form textarea {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            min-height: 70px;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .comment-form textarea::placeholder { color: #9aa8bb; }
+
+        .comment-form button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3c72;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            align-self: flex-start;
+        }
+
+        .comment-form button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+            background: #fff;
+        }
+
+        .comment-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 14px 16px;
+            border-radius: 12px;
+            border-left: 3px solid rgba(255, 255, 255, 0.25);
+            animation: commentIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+            display: flex;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .comment-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(6px);
+            border-left-color: rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes commentIn {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .comment-avatar {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .comment-item:hover .comment-avatar { transform: scale(1.15) rotate(8deg); }
+
+        .comment-body { flex-grow: 1; }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+            gap: 8px;
+        }
+
+        .comment-author { font-weight: 600; color: #fff; cursor: pointer; transition: color 0.25s ease; }
+        .comment-author:hover { color: #f093fb; }
+        .comment-date { color: #9aa8bb; flex-shrink: 0; }
+
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #e8eef7;
+            word-wrap: break-word;
+        }
+
+        .no-comments { color: #9aa8bb; font-size: 13px; font-style: italic; }
+
+        .editor-field {
+            text-align: left;
+            margin-bottom: 16px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .editor-field label {
+            display: block;
+            font-size: 13px;
+            color: #c8d4e3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .editor-field input,
+        .editor-field textarea,
+        .editor-field select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .editor-field select { cursor: pointer; }
+        .editor-field select option { background: #1e3c72; }
+
+        .editor-field input:focus,
+        .editor-field textarea:focus,
+        .editor-field select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .editor-field input::placeholder,
+        .editor-field textarea::placeholder { color: #9aa8bb; }
+
+        .editor-field textarea { min-height: 140px; }
+
+        .emoji-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .emoji-option {
+            font-size: 24px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .emoji-option:hover { background: rgba(255, 255, 255, 0.18); transform: scale(1.2) rotate(-6deg); }
+
+        .emoji-option.selected {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* ============ НАСТРОЙКИ ============ */
+        .settings-section {
+            margin-bottom: 30px;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .settings-section-title {
+            font-size: 13px;
+            color: #c8d4e3;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .settings-section-title .icon {
+            font-size: 18px;
+        }
+
+        .mode-switch {
+            display: flex;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: #c8d4e3;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .mode-btn.active { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            color: #1e3c72;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .mode-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+        .themes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .theme-swatch {
+            aspect-ratio: 1;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-swatch:hover { 
+            transform: scale(1.12) rotate(4deg); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .theme-swatch.active {
+            border-color: #fff;
+            transform: scale(1.12);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .theme-swatch::after {
+            content: '✓';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            opacity: 0;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-swatch.active::after {
+            opacity: 1;
+        }
+
+        .theme-blue-sw { background: linear-gradient(135deg, #1e3c72, #2575fc); }
+        .theme-sunset-sw { background: linear-gradient(135deg, #b06ab3, #d9776b); }
+        .theme-night-sw { background: linear-gradient(135deg, #0f0c29, #302b63); }
+        .theme-matrix-sw { background: linear-gradient(135deg, #000000, #1a5c1a); }
+        .theme-pink-sw { background: linear-gradient(135deg, #c48ecf, #cf7b9e); }
+
+        .music-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .music-option {
+            padding: 14px 18px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .music-option::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            pointer-events: none;
+        }
+
+        .music-option:hover::after { transform: translateX(100%); }
+
+        .music-option:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(6px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+
+        .music-option.active {
+            background: linear-gradient(135deg, rgba(107, 203, 119, 0.25), rgba(77, 150, 255, 0.25));
+            border-color: rgba(107, 203, 119, 0.6);
+            box-shadow: 0 0 25px rgba(77, 150, 255, 0.3);
+        }
+
+        .music-option.active::before {
+            content: '♪';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 14px;
+            color: #6bcb77;
+            animation: musicNote 1s ease-in-out infinite;
+        }
+
+        @keyframes musicNote {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-4px); opacity: 0.7; }
+        }
+
+        .music-option-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+        }
+
+        .music-option-info {
+            flex-grow: 1;
+        }
+
+        .music-option-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            font-size: 15px;
+        }
+
+        .music-option-desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .volume-control {
+            margin-bottom: 18px;
+        }
+
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .volume-icon { font-size: 18px; flex-shrink: 0; opacity: 0.8; transition: all 0.3s ease; }
+        .volume-row:hover .volume-icon { opacity: 1; transform: scale(1.15); }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            flex-grow: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            cursor: pointer;
+            transition: background 0.35s ease;
+        }
+
+        input[type="range"]:hover { background: rgba(255, 255, 255, 0.3); }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="range"]::-moz-range-progress {
+            background: rgba(255, 255, 255, 0.7);
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        .volume-value { 
+            font-size: 13px; 
+            color: #c8d4e3; 
+            text-align: center; 
+            letter-spacing: 0.5px;
+        }
+
+        .hidden { display: none; }
+
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f093fb, #f5576c, #4d96ff);
+            z-index: 10001;
+            width: 0%;
+            transition: width 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 15px rgba(240, 147, 251, 0.7);
+        }
+
+        .equalizer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 40px;
+            padding: 8px 10px;
+            background: rgba(30, 30, 50, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            transition: opacity 0.5s ease, transform 0.4s ease;
+        }
+
+        .equalizer.paused { opacity: 0.3; }
+        .equalizer:hover { transform: scale(1.05); }
+
+        .eq-bar {
+            width: 4px;
+            background: linear-gradient(to top, #fff, #c8d4e3);
+            border-radius: 2px;
+            height: 4px;
+            transition: height 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .confetti-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -20px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .featured-card:nth-child(1) { animation-delay: 0.08s; }
+        .featured-card:nth-child(2) { animation-delay: 0.16s; }
+        .featured-card:nth-child(3) { animation-delay: 0.24s; }
+        .featured-card:nth-child(4) { animation-delay: 0.32s; }
+
+        .article-card:nth-child(1) { animation-delay: 0.05s; }
+        .article-card:nth-child(2) { animation-delay: 0.12s; }
+        .article-card:nth-child(3) { animation-delay: 0.19s; }
+        .article-card:nth-child(4) { animation-delay: 0.26s; }
+
+        @media (max-width: 1250px) { 
+            .container.wide { max-width: 100%; } 
+        }
+
+        @media (max-width: 700px) {
+            .content { padding: 25px 20px; }
+            .site-header { padding: 16px 20px; flex-wrap: wrap; }
+            .site-name { font-size: 17px; }
+            .site-logo { font-size: 24px; }
+            .lobby-logo { font-size: 56px; }
+            .lobby-title { font-size: 26px; }
+            .featured-grid { grid-template-columns: 1fr; gap: 14px; }
+            .featured-left { grid-row: auto; }
+            .featured-left .featured-card { min-height: 240px; }
+            .featured-left .featured-title { font-size: 20px; }
+            .main-title { font-size: 22px; }
+            .float-item { font-size: 40px; }
+            .profile-avatar-big { font-size: 70px; }
+            .author-avatar-big { font-size: 80px; }
+            .header-avatar { width: 30px; height: 30px; font-size: 16px; }
+            .sound-toggle, .notif-btn { width: 38px; height: 38px; font-size: 16px; }
+            .header-username { max-width: 60px; font-size: 13px; }
+            .auth-header { padding: 30px 20px 15px; }
+            .auth-content { padding: 15px 25px 30px; }
+            .equalizer { bottom: 10px; right: 10px; height: 32px; padding: 6px 8px; }
+            .eq-bar { width: 3px; }
+            .achievements-grid { grid-template-columns: repeat(2, 1fr); }
+            .notif-panel { top: 70px; right: 10px; width: calc(100% - 20px); }
+            .header-search { order: 3; max-width: 100%; flex-basis: 100%; margin-top: 8px; }
+            .article-card { padding: 16px; gap: 14px; }
+            .article-cover-small { width: 60px; height: 60px; font-size: 28px; }
+            .article-title { font-size: 15px; }
+            .articles { gap: 14px; }
+        }
+    </style>
+</head>
+<body class="theme-blue mode-dark">
+
+    <div class="reading-progress" id="reading-progress"></div>
+    <div class="floating-bg" id="floatingBg"></div>
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <div class="notif-panel" id="notif-panel">
+        <div class="notif-title">
+            <span>🔔 Уведомления</span>
+            <button class="notif-clear" onclick="clearNotifications()">Очистить</button>
+        </div>
+        <div id="notif-list"></div>
+    </div>
+
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-icon" id="confirm-icon">🚪</div>
+            <div class="confirm-title" id="confirm-title"></div>
+            <div class="confirm-text" id="confirm-text"></div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-cancel" onclick="closeConfirm()">Отмена</button>
+                <button class="confirm-btn confirm-ok" id="confirm-ok-btn" onclick="confirmAction()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="equalizer" id="equalizer">
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+    </div>
+
+    <div class="container" id="container">
+
+        <div id="auth-screen">
+            <div class="auth-header">
+                <div class="auth-logo">📰</div>
+                <div class="auth-title">Article Website</div>
+                <div class="auth-subtitle">Войди или создай аккаунт, чтобы начать</div>
+            </div>
+
+            <div class="auth-content">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Вход</button>
+                    <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Регистрация</button>
+                </div>
+
+                <div class="auth-field">
+                    <label>Имя пользователя</label>
+                    <input type="text" id="auth-username" placeholder="Например: CoolWriter" maxlength="20" autocomplete="off">
+                </div>
+
+                <div class="auth-field">
+                    <label>Пароль</label>
+                    <input type="password" id="auth-password" placeholder="Минимум 4 символа" autocomplete="off">
+                </div>
+
+                <div class="auth-field" id="confirm-field" style="display:none;">
+                    <label>Повтори пароль</label>
+                    <input type="password" id="auth-password2" placeholder="Ещё раз пароль" autocomplete="off">
+                </div>
+
+                <div class="auth-error" id="auth-error"></div>
+                <div class="auth-info" id="auth-info"></div>
+
+                <button class="auth-btn" id="auth-submit" onclick="submitAuth()">Войти</button>
+            </div>
+        </div>
+
+        <header class="site-header hidden" id="site-header">
+            <div class="site-header-left">
+                <div class="site-logo" id="site-logo" onclick="easterEgg(event)">📰</div>
+                <div onclick="showLobby()" style="cursor:pointer;">
+                    <div class="site-name">Article Website</div>
+                    <div class="site-tagline">Твой портал в мир статей</div>
+                </div>
+            </div>
+            <div class="header-search">
+                <input type="text" id="global-search" placeholder="Поиск статей..." oninput="globalSearch(this.value)">
+            </div>
+            <div class="header-right">
+                <button class="notif-btn" onclick="toggleNotifPanel()" title="Уведомления">
+                    🔔
+                    <span class="notif-badge hidden" id="notif-badge">0</span>
+                </button>
+                <div class="header-user" onclick="showProfile()" title="Профиль">
+                    <div class="header-avatar" id="header-avatar">👤</div>
+                    <div class="header-username" id="header-username">Гость</div>
+                </div>
+                <button class="sound-toggle" id="sound-toggle" onclick="toggleSound()" title="Звук">🔊</button>
+            </div>
+        </header>
+
+        <div class="content hidden" id="main-content">
+
+            <div id="lobby-screen" class="lobby">
+                <div class="lobby-logo">📰</div>
+                <h1 class="lobby-title">Article Website</h1>
+                <p class="lobby-subtitle">Твой портал в мир статей</p>
+                <p class="welcome-user">Привет, <span id="lobby-username">Гость</span>! 👋</p>
+
+                <div class="menu">
+                    <button class="btn" onclick="showStart()">Начнем</button>
+                    <button class="btn" onclick="showSubscriptions()">👥 Мои подписки</button>
+                    <button class="btn" onclick="showReadLater()">📑 Читать позже</button>
+                    <button class="btn" onclick="showProfile()">👤 Профиль</button>
+                    <button class="btn" onclick="showSettings()">Настройки</button>
+                    <button class="btn" onclick="showAbout()">О чем сайт</button>
+                </div>
+
+                <div class="fun-fact">
+                    <span class="fact-label">💡 Факт дня</span>
+                    <span id="fact-text">Загрузка...</span>
+                </div>
+            </div>
+
+            <div id="profile-screen" class="hidden">
+                <h2 style="text-align:center;">👤 Профиль</h2>
+
+                <div class="profile-card">
+                    <div class="profile-avatar-big" id="profile-avatar-big">👤</div>
+                    <div class="profile-name" id="profile-name-display">Гость</div>
+                    <div class="profile-status">Читатель Article Website</div>
+
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="num" id="stat-my-articles">0</span>
+                            <span class="lbl">Статей</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="num" id="stat-my-likes">0</span>
+                            <span class="lbl">Лайков</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="num" id="stat-my-comments">0</span>
+                            <span class="lbl">Коммент.</span>
+                        </div>
+                    </div>
+
+                    <div class="stats-chart">
+                        <div class="chart-title">📊 Активность за 7 дней</div>
+                        <div class="chart-bars" id="chart-bars"></div>
+                    </div>
+
+                    <div class="profile-edit-title">🏆 Достижения</div>
+                    <div class="achievements-grid" id="achievements-grid"></div>
+
+                    <div class="profile-edit-title">Редактировать профиль</div>
+                    <input type="text" class="profile-input" id="profile-name-input" 
+                           placeholder="Твоё имя" maxlength="20" value="Гость">
+
+                    <div class="profile-edit-title">Выбери аватарку</div>
+                    <div class="avatar-picker" id="avatar-picker">
+                        <div class="avatar-option" onclick="pickAvatar('👤', this)">👤</div>
+                        <div class="avatar-option" onclick="pickAvatar('😎', this)">😎</div>
+                        <div class="avatar-option" onclick="pickAvatar('🐱', this)">🐱</div>
+                        <div class="avatar-option" onclick="pickAvatar('🦊', this)">🦊</div>
+                        <div class="avatar-option" onclick="pickAvatar('🐼', this)">🐼</div>
+                        <div class="avatar-option" onclick="pickAvatar('🦁', this)">🦁</div>
+                        <div class="avatar-option" onclick="pickAvatar('🐸', this)">🐸</div>
+                        <div class="avatar-option" onclick="pickAvatar('🐧', this)">🐧</div>
+                        <div class="avatar-option" onclick="pickAvatar('🦄', this)">🦄</div>
+                        <div class="avatar-option" onclick="pickAvatar('🐉', this)">🐉</div>
+                        <div class="avatar-option" onclick="pickAvatar('👽', this)">👽</div>
+                        <div class="avatar-option" onclick="pickAvatar('🤖', this)">🤖</div>
+                    </div>
+
+                    <button class="btn btn-small" onclick="saveProfile()">💾 Сохранить</button>
+                    <button class="btn btn-back" onclick="showLobby()">← В лобби</button>
+                    <button class="btn btn-logout" onclick="askLogout()">🚪 Выйти из аккаунта</button>
+                </div>
+            </div>
+
+            <div id="author-screen" class="hidden">
+                <h2 style="text-align:center;">👤 Профиль автора</h2>
+                <div class="author-card">
+                    <div class="author-avatar-big" id="author-avatar-big">👤</div>
+                    <div class="author-name" id="author-name-display">Автор</div>
+                    <div class="author-status" id="author-status-display">Автор статей</div>
+
+                    <div class="author-stats">
+                        <div class="author-stat">
+                            <span class="num" id="author-stat-articles">0</span>
+                            <span class="lbl">Статей</span>
+                        </div>
+                        <div class="author-stat">
+                            <span class="num" id="author-stat-likes">0</span>
+                            <span class="lbl">Лайков</span>
+                        </div>
+                        <div class="author-stat">
+                            <span class="num" id="author-stat-views">0</span>
+                            <span class="lbl">Просм.</span>
+                        </div>
+                    </div>
+
+                    <button class="author-subscribe-btn" id="author-subscribe-btn" onclick="toggleSubscribeFromAuthor()">
+                        + Подписаться
+                    </button>
+
+                    <div class="author-articles-title" id="author-articles-title">📚 Статьи автора</div>
+                    <div class="articles" id="author-articles-list"></div>
+
+                    <button class="btn btn-back" onclick="backFromAuthor()">← Назад</button>
+                </div>
+            </div>
+
+            <div id="subscriptions-screen" class="hidden">
+                <h2>👥 Мои подписки</h2>
+                <div class="articles" id="subscriptions-list"></div>
+                <button class="btn btn-back" onclick="showLobby()">← В лобби</button>
+            </div>
+
+            <div id="read-later-screen" class="hidden">
+                <h2>📑 Читать позже</h2>
+                <div class="articles" id="read-later-list"></div>
+                <button class="btn btn-back" onclick="showLobby()">← В лобби</button>
+            </div>
+
+            <div id="start-screen" class="hidden">
+                <h2 class="main-title">🔥 Популярное сегодня</h2>
+                <p class="main-subtitle">Сортируется по лайкам, просмотрам и комментариям</p>
+
+                <div class="featured-grid" id="featured-grid"></div>
+
+                <div class="menu">
+                    <button class="btn" onclick="showAllArticles()">📚 Все статьи</button>
+                    <button class="btn btn-saved" onclick="showSavedArticles()">⭐ Сохранённые статьи</button>
+                    <button class="btn btn-back" onclick="showLobby()">← В лобби</button>
+                </div>
+            </div>
+
+            <div id="articles-screen" class="hidden">
+                <h2>📚 Все статьи</h2>
+
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="search-input" 
+                           placeholder="🔍 Поиск по названию или тексту..." 
+                           oninput="applyFilters()">
+                    <select class="filter-select" id="sort-select" onchange="applyFilters()">
+                        <option value="date">📅 По дате</option>
+                        <option value="popular">🔥 По популярности</option>
+                        <option value="likes">❤️ По лайкам</option>
+                        <option value="views">👁 По просмотрам</option>
+                    </select>
+                </div>
+
+                <div class="category-pills" id="category-pills">
+                    <button class="category-pill active" data-cat="all" onclick="setCategory('all', this)">Все</button>
+                    <button class="category-pill" data-cat="tech" onclick="setCategory('tech', this)">💻 Технологии</button>
+                    <button class="category-pill" data-cat="science" onclick="setCategory('science', this)">🔬 Наука</button>
+                    <button class="category-pill" data-cat="life" onclick="setCategory('life', this)">🌱 Жизнь</button>
+                    <button class="category-pill" data-cat="games" onclick="setCategory('games', this)">🎮 Игры</button>
+                    <button class="category-pill" data-cat="art" onclick="setCategory('art', this)">🎨 Творчество</button>
+                </div>
+
+                <div class="articles" id="articles-list"></div>
+                <button class="btn btn-small" onclick="showEditor()">✍️ Написать свою</button>
+                <button class="btn btn-back" onclick="showStart()">← Назад</button>
+            </div>
+
+            <div id="saved-screen" class="hidden">
+                <h2>⭐ Сохранённые статьи</h2>
+                <div class="articles" id="saved-list"></div>
+                <button class="btn btn-back" onclick="showStart()">← Назад</button>
+            </div>
+
+            <div id="article-view-screen" class="hidden">
+                <div class="article-view">
+                    <div class="article-view-cover" id="view-cover"></div>
+                    <h2 id="view-title"></h2>
+                    <div class="article-view-date" id="view-date"></div>
+                    <div id="view-author-link"></div>
+                    <div class="article-actions" id="article-actions"></div>
+                    <div class="article-view-stats" id="view-stats"></div>
+                    <button class="subscribe-btn hidden" id="subscribe-btn" onclick="toggleSubscribe()">+ Подписаться на автора</button>
+                    <div class="article-view-text" id="view-text"></div>
+
+                    <div class="comments-section">
+                        <div class="comments-title">💬 Комментарии <span id="comments-count"></span></div>
+                        <div class="comment-form">
+                            <div class="comment-name-readonly">
+                                <span class="avatar-mini" id="comment-my-avatar">👤</span>
+                                <span>Пишешь как <strong id="comment-my-name">Гость</strong></span>
+                                <span class="hint">имя меняется в профиле</span>
+                            </div>
+                            <textarea id="comment-text" placeholder="Напиши комментарий..." maxlength="500"></textarea>
+                            <button onclick="addComment()">Отправить</button>
+                        </div>
+                        <div class="comment-list" id="comment-list"></div>
+                    </div>
+                </div>
+                <button class="btn btn-back" onclick="backFromArticle()">← Назад</button>
+            </div>
+
+            <div id="editor-screen" class="hidden">
+                <h2 style="text-align:center;" id="editor-title-h2">✍️ Новая статья</h2>
+
+                <div class="editor-field">
+                    <label>Обложка</label>
+                    <div class="cover-picker" id="cover-picker">
+                        <div class="cover-option selected" data-type="emoji" data-value="📝" onclick="pickCover(this)">📝</div>
+                        <div class="cover-option" data-type="emoji" data-value="💻" onclick="pickCover(this)">💻</div>
+                        <div class="cover-option" data-type="emoji" data-value="🎮" onclick="pickCover(this)">🎮</div>
+                        <div class="cover-option" data-type="emoji" data-value="🚀" onclick="pickCover(this)">🚀</div>
+                        <div class="cover-option" data-type="emoji" data-value="🌍" onclick="pickCover(this)">🌍</div>
+                        <div class="cover-option" data-type="emoji" data-value="🎨" onclick="pickCover(this)">🎨</div>
+                        <div class="cover-option" data-type="emoji" data-value="📚" onclick="pickCover(this)">📚</div>
+                        <div class="cover-option" data-type="emoji" data-value="⚡" onclick="pickCover(this)">⚡</div>
+                        <div class="cover-option" data-type="img" data-value="https://picsum.photos/seed/1/400/300" 
+                             style="background-image:url('https://picsum.photos/seed/1/400/300')" onclick="pickCover(this)"></div>
+                        <div class="cover-option" data-type="img" data-value="https://picsum.photos/seed/2/400/300" 
+                             style="background-image:url('https://picsum.photos/seed/2/400/300')" onclick="pickCover(this)"></div>
+                        <div class="cover-option" data-type="img" data-value="https://picsum.photos/seed/3/400/300" 
+                             style="background-image:url('https://picsum.photos/seed/3/400/300')" onclick="pickCover(this)"></div>
+                        <div class="cover-option" data-type="img" data-value="https://picsum.photos/seed/4/400/300" 
+                             style="background-image:url('https://picsum.photos/seed/4/400/300')" onclick="pickCover(this)"></div>
+                    </div>
+                </div>
+
+                <div class="editor-field">
+                    <label>Категория</label>
+                    <select id="editor-category">
+                        <option value="tech">💻 Технологии</option>
+                        <option value="science">🔬 Наука</option>
+                        <option value="life">🌱 Жизнь</option>
+                        <option value="games">🎮 Игры</option>
+                        <option value="art">🎨 Творчество</option>
+                    </select>
+                </div>
+
+                <div class="editor-field">
+                    <label>Заголовок</label>
+                    <input type="text" id="editor-title" placeholder="О чём статья?" maxlength="60">
+                </div>
+
+                <div class="editor-field">
+                    <label>Краткое описание</label>
+                    <input type="text" id="editor-desc" placeholder="Пара слов о статье" maxlength="100">
+                </div>
+
+                <div class="editor-field">
+                    <label>Текст статьи</label>
+                    <textarea id="editor-text" placeholder="Пиши здесь..."></textarea>
+                </div>
+
+                <div class="editor-field">
+                    <button class="btn btn-small" onclick="saveArticle()">💾 Сохранить</button>
+                    <button class="btn btn-back" onclick="cancelEditor()">← Отмена</button>
+                </div>
+            </div>
+
+            <div id="settings-screen" class="hidden">
+                <h2 style="text-align:center;">⚙️ Настройки</h2>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span class="icon">🌗</span>
+                        <span>Режим</span>
+                    </div>
+                    <div class="mode-switch">
+                        <button class="mode-btn active" id="mode-dark-btn" onclick="setMode('dark')">🌙 Тёмный</button>
+                        <button class="mode-btn" id="mode-light-btn" onclick="setMode('light')">☀️ Светлый</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span class="icon">🎨</span>
+                        <span>Задний фон</span>
+                    </div>
+                    <div class="themes">
+                        <div class="theme-swatch theme-blue-sw active" onclick="setTheme('theme-blue', this)"></div>
+                        <div class="theme-swatch theme-sunset-sw" onclick="setTheme('theme-sunset', this)"></div>
+                        <div class="theme-swatch theme-night-sw" onclick="setTheme('theme-night', this)"></div>
+                        <div class="theme-swatch theme-matrix-sw" onclick="setTheme('theme-matrix', this)"></div>
+                        <div class="theme-swatch theme-pink-sw" onclick="setTheme('theme-pink', this)"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span class="icon">🎵</span>
+                        <span>Фоновая музыка</span>
+                    </div>
+                    <div class="music-picker" id="music-picker">
+                        <button class="music-option active" data-music="calm" onclick="setMusic('calm', this)">
+                            <span class="music-option-icon">🌙</span>
+                            <div class="music-option-info">
+                                <div class="music-option-name">Спокойная ночь</div>
+                                <div class="music-option-desc">Мягкий эмбиент — классика</div>
+                            </div>
+                        </button>
+                        <button class="music-option" data-music="ocean" onclick="setMusic('ocean', this)">
+                            <span class="music-option-icon">🌊</span>
+                            <div class="music-option-info">
+                                <div class="music-option-name">Океан</div>
+                                <div class="music-option-desc">Глубокие низкие волны</div>
+                            </div>
+                        </button>
+                        <button class="music-option" data-music="forest" onclick="setMusic('forest', this)">
+                            <span class="music-option-icon">🌲</span>
+                            <div class="music-option-info">
+                                <div class="music-option-name">Лес</div>
+                                <div class="music-option-desc">Высокие лёгкие аккорды</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span class="icon">🔊</span>
+                        <span>Громкость</span>
+                    </div>
+
+                    <div class="volume-control">
+                        <div class="volume-row">
+                            <span class="volume-icon">🔈</span>
+                            <input type="range" id="sfx-slider" min="0" max="100" value="60" oninput="setSfxVolume(this.value)">
+                            <span class="volume-icon">🔊</span>
+                        </div>
+                        <div class="volume-value" id="sfx-value">Звуки — 60%</div>
+                    </div>
+
+                    <div class="volume-control">
+                        <div class="volume-row">
+                            <span class="volume-icon">🔈</span>
+                            <input type="range" id="music-slider" min="0" max="100" value="40" oninput="setMusicVolume(this.value)">
+                            <span class="volume-icon">🔊</span>
+                        </div>
+                        <div class="volume-value" id="music-value">Музыка — 40%</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-back" onclick="showLobby()">← В лобби</button>
+            </div>
+
+            <div id="about-screen" class="hidden">
+                <h2 style="text-align:center;">📖 О чем сайт</h2>
+                <div class="about-text">
+                    <p><span class="highlight">Article Website</span> — это бесплатная платформа для чтения и публикации статей.</p>
+                    <p>Здесь каждый может <span class="highlight">поделиться своими мыслями</span>, знаниями и идеями с другими людьми. Никаких подписок, никакой рекламы, никаких ограничений.</p>
+                    <p>Мы верим, что <span class="highlight">знания должны быть свободными</span>. Читай, пиши, вдохновляйся — всё это абсолютно бесплатно.</p>
+                    <p>Сайт создан для тех, кто любит слово, хочет учиться и делиться опытом. Добро пожаловать! ✨</p>
+                </div>
+                <button class="btn btn-back" onclick="showLobby()">← В лобби</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    const SITE_VERSION = '4.3';
+
+    const memoryStorage = {};
+    let storageAvailable = false;
+
+    try {
+        localStorage.setItem('__test__', '1');
+        localStorage.removeItem('__test__');
+        storageAvailable = true;
+    } catch (e) {
+        storageAvailable = false;
+    }
+
+    const safeStorage = {
+        getItem(key) {
+            try {
+                if (storageAvailable) return localStorage.getItem(key);
+                return memoryStorage[key] || null;
+            } catch (e) { return memoryStorage[key] || null; }
+        },
+        setItem(key, value) {
+            try {
+                if (storageAvailable) localStorage.setItem(key, value);
+                else memoryStorage[key] = value;
+            } catch (e) { memoryStorage[key] = value; }
+        },
+        removeItem(key) {
+            try {
+                if (storageAvailable) localStorage.removeItem(key);
+                else delete memoryStorage[key];
+            } catch (e) { delete memoryStorage[key]; }
+        }
+    };
+
+    (function checkVersion() {
+        try {
+            const savedVersion = safeStorage.getItem('aw_version');
+            if (savedVersion !== SITE_VERSION) {
+                const keysToRemove = [
+                    'aw_articles', 'aw_views', 'aw_viewed_by_me',
+                    'aw_likes', 'aw_bookmarks', 'aw_read_later',
+                    'aw_comments', 'aw_subscriptions', 'aw_notifications',
+                    'aw_activity', 'aw_accounts', 'aw_current_user'
+                ];
+                keysToRemove.forEach(k => safeStorage.removeItem(k));
+                safeStorage.setItem('aw_version', SITE_VERSION);
+            }
+        } catch (e) {}
+    })();
+
+    const DEFAULT_ARTICLES = [
+        {
+            id: 'history',
+            emoji: '📰',
+            cover: { type: 'emoji', value: '📰' },
+            title: 'История создания Article Website',
+            desc: 'Полный путь от первой строки HTML до полноценной платформы.',
+            date: '17.09.2026',
+            category: 'tech',
+            text: 'Всё началось с обычного школьного урока информатики. Учитель объяснял, как открыть Блокнот и написать пару тегов HTML. Тогда это казалось простым упражнением — но именно с этого момента началась история целого проекта.\n\nПервая версия сайта была предельно простой. Белый фон, чёрный текст, пара заголовков. Никаких анимаций, стилей, интерактива. Это был просто файл index.html, который открывался в браузере двойным кликом. Но уже тогда стало понятно: это не конец, а только начало.\n\nПостепенно сайт начал обрастать деталями. Появился CSS — сначала простой, потом всё более сложный. Градиентный фон, который плавно переливался. Полупрозрачные панели с эффектом матового стекла — так называемый glassmorphism. Кнопки со свечением при наведении. Плавные анимации, которые делали интерфейс живым.\n\nСледующим шагом стал JavaScript. Он превратил статичную страницу в настоящую интерактивную платформу. Появились экраны, между которыми можно переключаться. Лобби, настройки, профиль, редактор статей. Каждая кнопка начала что-то делать. Каждый клик — вызывать реакцию. Сайт стал похож на настоящий продукт.\n\nОсобое внимание уделили дизайну. Мы выбрали пять цветовых тем: глубокую синюю, тёплую закатную, тёмную ночную, строгую матрицу и мягкую розовую. Плюс два режима — тёмный и светлый. Всё это переключается в настройках и сохраняется в браузере. Пользователь может настроить сайт под себя за пару секунд.\n\nКаждая деталь интерфейса прорабатывалась отдельно. Фон с плавающими эмодзи, которые медленно перемещаются по экрану. Частицы, поднимающиеся снизу вверх. Стеклянные панели, через которые просвечивает градиент. Кнопки с эффектом пробегающего блика. Карточки статей, которые выезжают справа при наведении. Модальные окна с плавным появлением.\n\nЗвук стал отдельным направлением. Через Web Audio API — без единого mp3-файла — мы сделали целую систему. Двадцать разных звуков для кликов, которые выбираются случайно и никогда не повторяются подряд. Фоновая музыка — спокойный эмбиент из четырёх аккордов, которые плавно сменяют друг друга. Эквалайзер в углу, который визуализирует музыку в реальном времени.\n\nОсобое место занимают мелочи. Пасхалка на клик по логотипу — газета трясётся и издаёт смешной звук. Конфетти при сохранении статьи. Плавное появление каждого абзаца текста с задержкой. Прогресс-бар чтения, который заполняется по мере прокрутки. Все эти детали вместе создают ощущение качественного продукта.\n\nОтдельная глава — работа с данными. Аккаунты, статьи, лайки, комментарии, подписки, уведомления, достижения — всё сохраняется в localStorage браузера. Никакого сервера не нужно. Сайт работает полностью локально, но при этом помнит каждое действие пользователя между сессиями.\n\nМы прошли долгий путь. От пустого файла до платформы с полноценной системой аккаунтов, редактором статей, комментариями, лайками, подписками на авторов, статистикой, достижениями, уведомлениями, поиском, категориями, темами и звуками. Это уже не просто учебное задание — это настоящий проект, который продолжает развиваться.\n\nИ вот теперь сайт выходит в интернет. Дальше будет больше: настоящий сервер, база данных, обмен данными между пользователями, живые подписки, обновления в реальном времени. Но основа заложена именно здесь — в этом файле, в этом коде, в этих идеях. История только начинается.',
+            author: 'system'
+        }
+    ];
+
+    document.addEventListener('DOMContentLoaded', initApp);
+
+    function initApp() {
+        const bgEmojis = ['📖', '✍️', '📰', '💡', '🚀', '🎨', '💻', '📚', '⭐', '✨', '🌟', '📝'];
+
+        function spawnFloatingEmojis() {
+            const bg = document.getElementById('floatingBg');
+            if (!bg) return;
+            for (let i = 0; i < 14; i++) {
+                const el = document.createElement('div');
+                el.className = 'float-item';
+                el.textContent = bgEmojis[Math.floor(Math.random() * bgEmojis.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.top = Math.random() * 100 + '%';
+                el.style.fontSize = (40 + Math.random() * 50) + 'px';
+                el.style.animationDuration = (15 + Math.random() * 20) + 's';
+                el.style.animationDelay = (-Math.random() * 20) + 's';
+                el.style.opacity = (0.04 + Math.random() * 0.06).toFixed(2);
+                bg.appendChild(el);
+            }
+        }
+
+        function spawnParticles() {
+            const bg = document.getElementById('floatingBg');
+            if (!bg) return;
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (8 + Math.random() * 12) + 's';
+                p.style.animationDelay = (-Math.random() * 20) + 's';
+                p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+                p.style.opacity = 0.2 + Math.random() * 0.4;
+                bg.appendChild(p);
+            }
+        }
+
+        spawnFloatingEmojis();
+        spawnParticles();
+
+        const CATEGORY_NAMES = {
+            tech: '💻 Технологии',
+            science: '🔬 Наука',
+            life: '🌱 Жизнь',
+            games: '🎮 Игры',
+            art: '🎨 Творчество'
+        };
+
+        const ACHIEVEMENTS = [
+            { id: 'first_post', icon: '✍️', title: 'Первый пост', check: (s) => s.myArticles >= 1 },
+            { id: 'five_posts', icon: '📝', title: '5 статей', check: (s) => s.myArticles >= 5 },
+            { id: 'ten_likes', icon: '❤️', title: '10 лайков', check: (s) => s.totalLikes >= 10 },
+            { id: 'first_comment', icon: '💬', title: 'Первый коммент', check: (s) => s.myComments >= 1 },
+            { id: 'hundred_views', icon: '👁', title: '100 просмотров', check: (s) => s.totalViews >= 100 },
+            { id: 'subscriber', icon: '👥', title: 'Есть подписки', check: (s) => s.subscriptionsCount >= 1 },
+            { id: 'popular', icon: '🔥', title: 'Топ-1', check: (s) => s.isTop },
+            { id: 'critic', icon: '🎯', title: '5 комментов', check: (s) => s.myComments >= 5 },
+            { id: 'collector', icon: '⭐', title: '10 сохранённых', check: (s) => s.bookmarksCount >= 10 }
+        ];
+
+        let articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+        let accounts = {};
+        let currentUser = null;
+        let authMode = 'login';
+        let profile = { name: 'Гость', avatar: '👤' };
+        let pendingAvatar = '👤';
+        let likes = {};
+        let views = {};
+        let bookmarks = {};
+        let readLater = {};
+        let comments = {};
+        let viewedByMe = {};
+        let subscriptions = {};
+        let notifications = {};
+        let activity = {};
+        let editingArticleId = null;
+        let viewingAuthor = null;
+        let currentMusic = 'calm';
+        let previousScreenBeforeAuthor = null;
+
+        let selectedCover = { type: 'emoji', value: '📝' };
+        let previousScreen = 'start';
+        let currentArticleId = null;
+        let currentCategory = 'all';
+        let notifPanelOpen = false;
+
+        function loadData() {
+            try {
+                const a = safeStorage.getItem('aw_accounts'); if (a) accounts = JSON.parse(a);
+                const u = safeStorage.getItem('aw_current_user'); if (u) currentUser = u;
+
+                const s = safeStorage.getItem('aw_articles');
+                if (s) {
+                    try {
+                        const parsed = JSON.parse(s);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            articles = parsed;
+                        } else {
+                            articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+                            safeStorage.setItem('aw_articles', JSON.stringify(articles));
+                        }
+                    } catch (e) {
+                        articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+                    }
+                }
+
+                const l = safeStorage.getItem('aw_likes'); if (l) likes = JSON.parse(l);
+                const v = safeStorage.getItem('aw_views'); if (v) views = JSON.parse(v);
+                const b = safeStorage.getItem('aw_bookmarks'); if (b) bookmarks = JSON.parse(b);
+                const rl = safeStorage.getItem('aw_read_later'); if (rl) readLater = JSON.parse(rl);
+                const c = safeStorage.getItem('aw_comments'); if (c) comments = JSON.parse(c);
+                const vb = safeStorage.getItem('aw_viewed_by_me'); if (vb) viewedByMe = JSON.parse(vb);
+                const sub = safeStorage.getItem('aw_subscriptions'); if (sub) subscriptions = JSON.parse(sub);
+                const n = safeStorage.getItem('aw_notifications'); if (n) notifications = JSON.parse(n);
+                const act = safeStorage.getItem('aw_activity'); if (act) activity = JSON.parse(act);
+                const m = safeStorage.getItem('aw_mode'); if (m) {
+                    document.body.classList.remove('mode-dark', 'mode-light');
+                    document.body.classList.add(m === 'light' ? 'mode-light' : 'mode-dark');
+                    const mdBtn = document.getElementById('mode-dark-btn');
+                    const mlBtn = document.getElementById('mode-light-btn');
+                    if (mdBtn && mlBtn) {
+                        mdBtn.classList.toggle('active', m !== 'light');
+                        mlBtn.classList.toggle('active', m === 'light');
+                    }
+                }
+                const mus = safeStorage.getItem('aw_music');
+                if (mus) {
+                    currentMusic = mus;
+                    const musicOptions = document.querySelectorAll('.music-option');
+                    musicOptions.forEach(opt => {
+                        opt.classList.toggle('active', opt.dataset.music === mus);
+                    });
+                }
+            } catch (e) {}
+
+            if (!Array.isArray(articles) || articles.length === 0) {
+                articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+            }
+
+            articles.forEach(a => {
+                if (views[a.id] === undefined) views[a.id] = 0;
+                if (!a.category) a.category = 'life';
+                if (!a.cover) a.cover = { type: 'emoji', value: a.emoji || '📝' };
+            });
+        }
+
+        function saveData() {
+            try {
+                safeStorage.setItem('aw_accounts', JSON.stringify(accounts));
+                if (currentUser) safeStorage.setItem('aw_current_user', currentUser);
+                else safeStorage.removeItem('aw_current_user');
+                safeStorage.setItem('aw_articles', JSON.stringify(articles));
+                safeStorage.setItem('aw_likes', JSON.stringify(likes));
+                safeStorage.setItem('aw_views', JSON.stringify(views));
+                safeStorage.setItem('aw_bookmarks', JSON.stringify(bookmarks));
+                safeStorage.setItem('aw_read_later', JSON.stringify(readLater));
+                safeStorage.setItem('aw_comments', JSON.stringify(comments));
+                safeStorage.setItem('aw_viewed_by_me', JSON.stringify(viewedByMe));
+                safeStorage.setItem('aw_subscriptions', JSON.stringify(subscriptions));
+                safeStorage.setItem('aw_notifications', JSON.stringify(notifications));
+                safeStorage.setItem('aw_activity', JSON.stringify(activity));
+                safeStorage.setItem('aw_music', currentMusic);
+            } catch (e) {}
+        }
+
+        loadData();
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            let d;
+            if (dateStr.includes('.')) {
+                const parts = dateStr.split('.');
+                d = new Date(parts[2], parts[1] - 1, parts[0]);
+            } else {
+                d = new Date(dateStr);
+            }
+            if (isNaN(d.getTime())) return dateStr;
+
+            const now = new Date();
+            const diffMs = now - d;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+            if (diffMins < 1) return 'только что';
+            if (diffMins < 60) return diffMins + ' мин назад';
+            if (diffHours < 24) return diffHours + ' ч назад';
+            if (diffDays === 1) return 'вчера';
+            if (diffDays < 7) return diffDays + ' дн назад';
+            if (diffDays < 30) return Math.floor(diffDays / 7) + ' нед назад';
+            return dateStr;
+        }
+
+        function addNotification(user, text, articleId) {
+            if (!user || user === currentUser) return;
+            if (!notifications[user]) notifications[user] = [];
+            notifications[user].unshift({
+                text, articleId,
+                time: new Date().toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }),
+                read: false
+            });
+            if (notifications[user].length > 30) notifications[user] = notifications[user].slice(0, 30);
+            saveData();
+            updateNotifBadge();
+        }
+
+        function updateNotifBadge() {
+            if (!currentUser) return;
+            const arr = (notifications[currentUser] || []).filter(n => !n.read);
+            const badge = document.getElementById('notif-badge');
+            if (!badge) return;
+            if (arr.length > 0) {
+                badge.textContent = arr.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        window.toggleNotifPanel = function() {
+            soundClick();
+            notifPanelOpen = !notifPanelOpen;
+            const panel = document.getElementById('notif-panel');
+            panel.classList.toggle('show', notifPanelOpen);
+            if (notifPanelOpen) {
+                renderNotifications();
+                setTimeout(() => {
+                    if (currentUser && notifications[currentUser]) {
+                        notifications[currentUser].forEach(n => n.read = true);
+                        saveData();
+                        updateNotifBadge();
+                    }
+                }, 1500);
+            }
+        };
+
+        function renderNotifications() {
+            const list = document.getElementById('notif-list');
+            const arr = currentUser ? (notifications[currentUser] || []) : [];
+            list.innerHTML = '';
+            if (arr.length === 0) {
+                list.innerHTML = '<div class="notif-empty">Пока нет уведомлений</div>';
+                return;
+            }
+            arr.forEach(n => {
+                const item = document.createElement('div');
+                item.className = 'notif-item' + (n.read ? '' : ' unread');
+                item.onclick = () => {
+                    if (n.articleId && articles.find(a => a.id === n.articleId)) {
+                        window.toggleNotifPanel();
+                        previousScreen = 'start';
+                        openArticle(n.articleId);
+                    }
+                };
+                item.innerHTML = `
+                    <div>${n.text}</div>
+                    <div class="notif-item-time">${n.time}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        window.clearNotifications = function() {
+            soundClick();
+            if (!currentUser) return;
+            notifications[currentUser] = [];
+            saveData();
+            renderNotifications();
+            updateNotifBadge();
+        };
+
+        function trackActivity() {
+            if (!currentUser) return;
+            const today = new Date().toISOString().slice(0, 10);
+            if (!activity[currentUser]) activity[currentUser] = {};
+            activity[currentUser][today] = (activity[currentUser][today] || 0) + 1;
+            saveData();
+        }
+
+        let audioCtx = null;
+        let soundEnabled = true;
+        let musicPlaying = false;
+        let musicMasterGain = null;
+        let musicAnalyser = null;
+        let musicNodes = [];
+        let musicTimeout = null;
+        let sfxVolume = 0.6;
+        let musicVolume = 0.4;
+
+        const MUSIC_COMPOSITIONS = {
+            calm: [
+                [174.61, 220.00, 261.63],
+                [196.00, 246.94, 293.66],
+                [130.81, 164.81, 196.00],
+                [146.83, 185.00, 220.00]
+            ],
+            ocean: [
+                [110.00, 130.81, 164.81],
+                [98.00, 123.47, 146.83],
+                [87.31, 110.00, 130.81],
+                [82.41, 103.83, 123.47]
+            ],
+            forest: [
+                [261.63, 329.63, 392.00],
+                [293.66, 369.99, 440.00],
+                [329.63, 415.30, 493.88],
+                [349.23, 440.00, 523.25]
+            ]
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+                catch (e) { return; }
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playTone(frequency, duration, type = 'sine', volume = 0.08) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = frequency;
+                const finalVolume = volume * sfxVolume;
+                if (finalVolume <= 0) return;
+                gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function getMusicGain() {
+            if (!musicMasterGain && audioCtx) {
+                musicMasterGain = audioCtx.createGain();
+                musicMasterGain.gain.value = musicVolume;
+                musicAnalyser = audioCtx.createAnalyser();
+                musicAnalyser.fftSize = 64;
+                musicMasterGain.connect(musicAnalyser);
+                musicAnalyser.connect(audioCtx.destination);
+            }
+            return musicMasterGain;
+        }
+
+        function playPad(frequencies, startTime, duration) {
+            const baseVolume = 0.08;
+            if (musicVolume <= 0 || !audioCtx) return;
+            const gain = getMusicGain();
+            if (!gain) return;
+            frequencies.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const oscGain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                osc.detune.value = (i - 1) * 5;
+                oscGain.gain.setValueAtTime(0, startTime);
+                oscGain.gain.linearRampToValueAtTime(baseVolume, startTime + 2);
+                oscGain.gain.setValueAtTime(baseVolume, startTime + duration - 2);
+                oscGain.gain.linearRampToValueAtTime(0, startTime + duration);
+                osc.connect(oscGain);
+                oscGain.connect(gain);
+                osc.start(startTime);
+                osc.stop(startTime + duration);
+                musicNodes.push(osc);
+            });
+        }
+
+        function startMusic() {
+            if (!soundEnabled || musicPlaying || musicVolume <= 0) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                getMusicGain();
+                musicPlaying = true;
+                const eq = document.getElementById('equalizer');
+                if (eq) eq.classList.remove('paused');
+                scheduleNextChord(0);
+            } catch (e) {}
+        }
+
+        function scheduleNextChord(chordIndex) {
+            if (!musicPlaying || !audioCtx) return;
+            const progression = MUSIC_COMPOSITIONS[currentMusic] || MUSIC_COMPOSITIONS.calm;
+            const chord = progression[chordIndex % progression.length];
+            const now = audioCtx.currentTime;
+            playPad(chord, now, 8);
+            musicTimeout = setTimeout(() => scheduleNextChord(chordIndex + 1), 7500);
+        }
+
+        function stopMusic() {
+            musicPlaying = false;
+            const eq = document.getElementById('equalizer');
+            if (eq) eq.classList.add('paused');
+            if (musicTimeout) { clearTimeout(musicTimeout); musicTimeout = null; }
+            musicNodes.forEach(osc => { try { osc.stop(); } catch (e) {} });
+            musicNodes = [];
+        }
+
+        window.setMusic = function(musicType, el) {
+            soundClick();
+            const wasPlaying = musicPlaying;
+            stopMusic();
+            currentMusic = musicType;
+            document.querySelectorAll('.music-option').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+            saveData();
+            if (wasPlaying && soundEnabled && musicVolume > 0) {
+                setTimeout(() => startMusic(), 200);
+            }
+        };
+
+        window.toggleSound = function() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-toggle');
+            if (soundEnabled) {
+                btn.textContent = '🔊';
+                btn.classList.remove('muted');
+                startMusic();
+                playTone(880, 0.08, 'sine', 0.07);
+            } else {
+                btn.textContent = '🔇';
+                btn.classList.add('muted');
+                stopMusic();
+            }
+        };
+
+        let lastSliderSoundTime = 0;
+        function playSliderTick() {
+            const now = Date.now();
+            if (now - lastSliderSoundTime < 80) return;
+            lastSliderSoundTime = now;
+            playTone(700, 0.03, 'sine', 0.04);
+        }
+
+        window.setSfxVolume = function(value) {
+            sfxVolume = value / 100;
+            document.getElementById('sfx-value').textContent = 'Звуки — ' + value + '%';
+            playSliderTick();
+        };
+
+        window.setMusicVolume = function(value) {
+            musicVolume = value / 100;
+            document.getElementById('music-value').textContent = 'Музыка — ' + value + '%';
+            if (musicMasterGain && audioCtx) musicMasterGain.gain.setValueAtTime(musicVolume, audioCtx.currentTime);
+            if (value === 0) stopMusic();
+            else if (soundEnabled && !musicPlaying) startMusic();
+            playSliderTick();
+        };
+
+        const clickSounds = [
+            () => playTone(880, 0.08, 'sine', 0.06),
+            () => playTone(1046, 0.06, 'sine', 0.05),
+            () => playTone(1200, 0.05, 'sine', 0.05),
+            () => playTone(1318, 0.07, 'sine', 0.05),
+            () => playTone(660, 0.09, 'sine', 0.07),
+            () => playTone(523, 0.12, 'sine', 0.07),
+            () => playTone(587, 0.1, 'sine', 0.06),
+            () => playTone(440, 0.1, 'triangle', 0.08),
+            () => playTone(330, 0.12, 'triangle', 0.08),
+            () => playTone(392, 0.1, 'sine', 0.07),
+            () => { playTone(1046, 0.05, 'sine', 0.05); setTimeout(() => playTone(1318, 0.07, 'sine', 0.05), 45); },
+            () => { playTone(587, 0.06, 'sine', 0.06); setTimeout(() => playTone(784, 0.08, 'sine', 0.05), 50); },
+            () => { playTone(880, 0.04, 'sine', 0.05); setTimeout(() => playTone(1174, 0.06, 'sine', 0.05), 40); },
+            () => { playTone(659, 0.05, 'sine', 0.06); setTimeout(() => playTone(988, 0.07, 'sine', 0.05), 45); },
+            () => playTone(1200, 0.04, 'square', 0.04),
+            () => playTone(800, 0.06, 'square', 0.035),
+            () => playTone(600, 0.08, 'sawtooth', 0.04),
+            () => { playTone(523, 0.04, 'sine', 0.05); setTimeout(() => playTone(659, 0.04, 'sine', 0.05), 35); setTimeout(() => playTone(784, 0.06, 'sine', 0.05), 70); },
+            () => { playTone(659, 0.04, 'sine', 0.05); setTimeout(() => playTone(784, 0.04, 'sine', 0.05), 35); setTimeout(() => playTone(1046, 0.06, 'sine', 0.05), 70); },
+            () => { playTone(988, 0.06, 'sine', 0.05); setTimeout(() => playTone(1480, 0.08, 'sine', 0.04), 40); }
+        ];
+
+        let lastClickIndex = -1;
+        function soundClick() {
+            let idx;
+            do { idx = Math.floor(Math.random() * clickSounds.length); }
+            while (idx === lastClickIndex && clickSounds.length > 1);
+            lastClickIndex = idx;
+            clickSounds[idx]();
+        }
+
+        function soundSave() {
+            playTone(523, 0.1, 'sine', 0.08);
+            setTimeout(() => playTone(659, 0.1, 'sine', 0.08), 90);
+            setTimeout(() => playTone(784, 0.15, 'sine', 0.08), 180);
+        }
+        function soundError() { playTone(220, 0.25, 'sawtooth', 0.05); }
+        function soundLike() {
+            playTone(880, 0.08, 'sine', 0.07);
+            setTimeout(() => playTone(1174, 0.1, 'sine', 0.07), 70);
+            setTimeout(() => playTone(1568, 0.12, 'sine', 0.06), 140);
+        }
+        function soundBookmark() {
+            playTone(660, 0.08, 'triangle', 0.07);
+            setTimeout(() => playTone(990, 0.12, 'triangle', 0.07), 80);
+        }
+        function soundBack() {
+            playTone(550, 0.1, 'sine', 0.06);
+            setTimeout(() => playTone(370, 0.14, 'sine', 0.06), 70);
+        }
+        function soundEasterEgg() {
+            playTone(180, 0.15, 'sawtooth', 0.08);
+            setTimeout(() => playTone(240, 0.12, 'square', 0.07), 80);
+            setTimeout(() => playTone(1200, 0.08, 'sine', 0.06), 180);
+            setTimeout(() => playTone(800, 0.1, 'triangle', 0.06), 260);
+            setTimeout(() => playTone(1600, 0.12, 'sine', 0.05), 340);
+        }
+
+        document.addEventListener('click', () => {
+            initAudio();
+            if (soundEnabled && musicVolume > 0 && currentUser) startMusic();
+        }, { once: true });
+
+        const eqBars = document.querySelectorAll('.eq-bar');
+        function animateEqualizer() {
+            requestAnimationFrame(animateEqualizer);
+            if (!musicAnalyser || !musicPlaying) {
+                eqBars.forEach(b => b.style.height = '4px');
+                return;
+            }
+            const data = new Uint8Array(musicAnalyser.frequencyBinCount);
+            musicAnalyser.getByteFrequencyData(data);
+            eqBars.forEach((bar, i) => {
+                const val = data[i * 2] || 0;
+                bar.style.height = Math.max(4, (val / 255) * 32) + 'px';
+            });
+        }
+        animateEqualizer();
+
+        const fallbackFacts = [
+            'Первый сайт в мире появился в 1991 году. Он до сих пор работает!',
+            'HTML расшифровывается как HyperText Markup Language.',
+            'Первый компьютерный вирус был создан в 1971 году и назывался Creeper.',
+            'Первая компьютерная мышь была деревянной.',
+            'Слово «робот» придумал чешский писатель Карел Чапек в 1920 году.',
+            'Первый смартфон появился в 1992 году — ещё до эры интернета.',
+            'В среднем человек проводит в интернете около 7 часов в день.',
+            'Первое сообщение по электронной почте было отправлено в 1971 году.',
+            'Самое длинное слово в русском языке содержит 35 букв.',
+            'У осьминога три сердца, а кровь у него голубая.'
+        ];
+
+        function loadFact() {
+            const el = document.getElementById('fact-text');
+            if (el) el.textContent = fallbackFacts[Math.floor(Math.random() * fallbackFacts.length)];
+        }
+        loadFact();
+
+        window.switchAuthTab = function(mode) {
+            soundClick();
+            authMode = mode;
+            document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+            document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+            document.getElementById('confirm-field').style.display = mode === 'register' ? 'block' : 'none';
+            document.getElementById('auth-submit').textContent = mode === 'login' ? 'Войти' : 'Создать аккаунт';
+            document.getElementById('auth-error').textContent = '';
+            document.getElementById('auth-info').textContent = '';
+        };
+
+        window.submitAuth = function() {
+            const username = document.getElementById('auth-username').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const password2 = document.getElementById('auth-password2').value;
+            const errorEl = document.getElementById('auth-error');
+            const infoEl = document.getElementById('auth-info');
+
+            errorEl.textContent = '';
+            infoEl.textContent = '';
+
+            if (!username) { soundError(); errorEl.textContent = 'Введи имя пользователя'; return; }
+            if (username.length < 3) { soundError(); errorEl.textContent = 'Имя минимум 3 символа'; return; }
+            if (!password) { soundError(); errorEl.textContent = 'Введи пароль'; return; }
+            if (password.length < 4) { soundError(); errorEl.textContent = 'Пароль минимум 4 символа'; return; }
+
+            if (authMode === 'login') {
+                if (!accounts[username]) {
+                    soundError();
+                    errorEl.textContent = 'Пользователь не найден';
+                    return;
+                }
+                if (accounts[username].password !== password) {
+                    soundError();
+                    errorEl.textContent = 'Неверный пароль';
+                    return;
+                }
+                currentUser = username;
+                profile = {
+                    name: accounts[username].name || username,
+                    avatar: accounts[username].avatar || '👤'
+                };
+                saveData();
+                soundSave();
+                launchConfetti();
+                enterSite();
+            } else {
+                if (password !== password2) {
+                    soundError();
+                    errorEl.textContent = 'Пароли не совпадают';
+                    return;
+                }
+                if (accounts[username]) {
+                    soundError();
+                    errorEl.textContent = 'Имя уже занято';
+                    return;
+                }
+                accounts[username] = { password, name: username, avatar: '👤' };
+                currentUser = username;
+                profile = { name: username, avatar: '👤' };
+                saveData();
+                soundSave();
+                launchConfetti();
+                infoEl.textContent = 'Аккаунт создан! 🎉';
+                setTimeout(() => enterSite(), 900);
+            }
+        };
+
+        function enterSite() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('site-header').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+
+            updateUserDisplay();
+            updateNotifBadge();
+            hideAll();
+            setWide(false);
+            revealScreen('lobby-screen');
+        }
+
+        function updateUserDisplay() {
+            document.getElementById('header-avatar').textContent = profile.avatar;
+            document.getElementById('header-username').textContent = profile.name;
+            document.getElementById('lobby-username').textContent = profile.name;
+        }
+
+        let confirmCallback = null;
+
+        function showConfirm(icon, title, text, okText, callback) {
+            document.getElementById('confirm-icon').textContent = icon;
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-text').textContent = text;
+            document.getElementById('confirm-ok-btn').textContent = okText;
+            confirmCallback = callback;
+            document.getElementById('confirm-overlay').classList.add('show');
+        }
+
+        window.closeConfirm = function() {
+            document.getElementById('confirm-overlay').classList.remove('show');
+            confirmCallback = null;
+        };
+
+        window.confirmAction = function() {
+            const cb = confirmCallback;
+            window.closeConfirm();
+            if (cb) cb();
+        };
+
+        window.askLogout = function() {
+            soundClick();
+            showConfirm('🚪', 'Выйти из аккаунта?', 'Прогресс сохранится.', 'Выйти', doLogout);
+        };
+
+        function doLogout() {
+            if (currentUser && accounts[currentUser]) {
+                accounts[currentUser].name = profile.name;
+                accounts[currentUser].avatar = profile.avatar;
+            }
+            currentUser = null;
+            saveData();
+
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('site-header').classList.add('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('notif-panel').classList.remove('show');
+            notifPanelOpen = false;
+
+            document.getElementById('auth-username').value = '';
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-password2').value = '';
+            document.getElementById('auth-error').textContent = '';
+            document.getElementById('auth-info').textContent = '';
+            window.switchAuthTab('login');
+            soundBack();
+        }
+
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c48ecf', '#f093fb', '#f5576c', '#00d4ff'];
+            for (let i = 0; i < 80; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+                piece.style.animationDelay = (Math.random() * 0.5) + 's';
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                if (Math.random() > 0.5) piece.style.borderRadius = '50%';
+                else {
+                    piece.style.width = (6 + Math.random() * 8) + 'px';
+                    piece.style.height = (10 + Math.random() * 8) + 'px';
+                }
+                container.appendChild(piece);
+                setTimeout(() => piece.remove(), 4500);
+            }
+        }
+
+        function setWide(isWide) {
+            const container = document.getElementById('container');
+            if (isWide) container.classList.add('wide');
+            else container.classList.remove('wide');
+        }
+
+        function hideAll() {
+            document.querySelectorAll('#main-content > div').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('screen-enter');
+            });
+        }
+
+        function revealScreen(id) {
+            const screen = document.getElementById(id);
+            screen.classList.remove('hidden');
+            const content = document.querySelector('.content');
+            if (content) content.scrollTop = 0;
+            requestAnimationFrame(() => {
+                screen.classList.add('screen-enter');
+            });
+        }
+
+        window.showLobby = function() {
+            soundClick(); hideAll(); setWide(false);
+            revealScreen('lobby-screen');
+        };
+        window.showSettings = function() {
+            soundClick(); hideAll(); setWide(false);
+            revealScreen('settings-screen');
+        };
+        window.showAbout = function() {
+            soundClick(); hideAll(); setWide(false);
+            revealScreen('about-screen');
+        };
+        window.showStart = function() {
+            soundClick(); hideAll(); setWide(true);
+            renderFeatured();
+            revealScreen('start-screen');
+        };
+        window.showAllArticles = function() {
+            soundClick(); hideAll(); setWide(true);
+            currentCategory = 'all';
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            const allPill = document.querySelector('.category-pill[data-cat="all"]');
+            if (allPill) allPill.classList.add('active');
+            document.getElementById('search-input').value = '';
+            document.getElementById('sort-select').value = 'date';
+            applyFilters();
+            revealScreen('articles-screen');
+        };
+        window.showSavedArticles = function() {
+            soundClick(); hideAll(); setWide(true);
+            renderSaved();
+            revealScreen('saved-screen');
+        };
+        window.showSubscriptions = function() {
+            soundClick(); hideAll(); setWide(true);
+            renderSubscriptions();
+            revealScreen('subscriptions-screen');
+        };
+        window.showReadLater = function() {
+            soundClick(); hideAll(); setWide(true);
+            renderReadLater();
+            revealScreen('read-later-screen');
+        };
+        window.showEditor = function() {
+            soundClick(); hideAll(); setWide(true);
+            editingArticleId = null;
+            document.getElementById('editor-title-h2').textContent = '✍️ Новая статья';
+            document.getElementById('editor-title').value = '';
+            document.getElementById('editor-desc').value = '';
+            document.getElementById('editor-text').value = '';
+            document.getElementById('editor-category').value = 'tech';
+            selectedCover = { type: 'emoji', value: '📝' };
+            document.querySelectorAll('.cover-option').forEach(el => el.classList.remove('selected'));
+            const first = document.querySelector('.cover-option');
+            if (first) first.classList.add('selected');
+            revealScreen('editor-screen');
+        };
+
+        window.cancelEditor = function() { window.showAllArticles(); };
+
+        window.showProfile = function() {
+            soundClick(); hideAll(); setWide(false);
+            document.getElementById('profile-name-input').value = profile.name;
+            document.getElementById('profile-avatar-big').textContent = profile.avatar;
+            document.getElementById('profile-name-display').textContent = profile.name;
+            pendingAvatar = profile.avatar;
+
+            document.querySelectorAll('.avatar-option').forEach(o => {
+                o.classList.toggle('selected', o.textContent === profile.avatar);
+            });
+
+            const myArticles = articles.filter(a => a.author === currentUser).length;
+            const myLikes = articles.filter(a => a.author === currentUser).reduce((s, a) => s + (likes[a.id] ? 1 : 0), 0);
+            const myComments = Object.values(comments).flat().filter(c => c.author === currentUser).length;
+
+            document.getElementById('stat-my-articles').textContent = myArticles;
+            document.getElementById('stat-my-likes').textContent = myLikes;
+            document.getElementById('stat-my-comments').textContent = myComments;
+
+            renderChart();
+            renderAchievements();
+            revealScreen('profile-screen');
+        };
+
+        window.showAuthorProfile = function(authorUsername) {
+            soundClick();
+            if (!authorUsername || authorUsername === 'system') return;
+            
+            viewingAuthor = authorUsername;
+            previousScreenBeforeAuthor = previousScreen;
+            const authorAcc = accounts[authorUsername];
+            const authorName = authorAcc ? (authorAcc.name || authorUsername) : authorUsername;
+            const authorAvatar = authorAcc ? (authorAcc.avatar || '👤') : '👤';
+
+            document.getElementById('author-avatar-big').textContent = authorAvatar;
+            document.getElementById('author-name-display').textContent = authorName;
+            document.getElementById('author-status-display').textContent = 'Автор статей';
+
+            const authorArticles = articles.filter(a => a.author === authorUsername);
+            const totalLikes = authorArticles.reduce((s, a) => s + (likes[a.id] ? 1 : 0), 0);
+            const totalViews = authorArticles.reduce((s, a) => s + (views[a.id] || 0), 0);
+
+            document.getElementById('author-stat-articles').textContent = authorArticles.length;
+            document.getElementById('author-stat-likes').textContent = totalLikes;
+            document.getElementById('author-stat-views').textContent = totalViews;
+
+            const btn = document.getElementById('author-subscribe-btn');
+            if (authorUsername === currentUser) {
+                btn.classList.add('hidden');
+            } else {
+                btn.classList.remove('hidden');
+                if (!subscriptions[currentUser]) subscriptions[currentUser] = {};
+                const isSubbed = subscriptions[currentUser][authorUsername];
+                if (isSubbed) {
+                    btn.textContent = '✓ Подписан';
+                    btn.classList.remove('unsubscribed');
+                } else {
+                    btn.textContent = '+ Подписаться';
+                    btn.classList.add('unsubscribed');
+                }
+            }
+
+            const list = document.getElementById('author-articles-list');
+            list.innerHTML = '';
+            const titleEl = document.getElementById('author-articles-title');
+            if (authorArticles.length === 0) {
+                titleEl.textContent = '📚 У автора пока нет статей';
+            } else {
+                titleEl.textContent = '📚 Статьи автора';
+                authorArticles.forEach(a => list.appendChild(makeArticleCard(a, 'author')));
+            }
+
+            hideAll(); setWide(false);
+            revealScreen('author-screen');
+        };
+
+        window.backFromAuthor = function() {
+            soundBack();
+            if (currentArticleId && previousScreenBeforeAuthor !== 'author') {
+                openArticle(currentArticleId);
+            } else {
+                window.showAllArticles();
+            }
+        };
+
+        window.toggleSubscribeFromAuthor = function() {
+            if (!viewingAuthor || viewingAuthor === currentUser) return;
+            soundClick();
+            if (!subscriptions[currentUser]) subscriptions[currentUser] = {};
+            subscriptions[currentUser][viewingAuthor] = !subscriptions[currentUser][viewingAuthor];
+            if (subscriptions[currentUser][viewingAuthor]) {
+                soundSave();
+                addNotification(viewingAuthor, `👥 ${profile.name} подписался на тебя`, null);
+            }
+            saveData();
+            window.showAuthorProfile(viewingAuthor);
+        };
+
+        function renderChart() {
+            const bars = document.getElementById('chart-bars');
+            bars.innerHTML = '';
+            const days = [];
+            const labels = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const key = d.toISOString().slice(0, 10);
+                const count = (activity[currentUser] && activity[currentUser][key]) || 0;
+                days.push({ label: labels[d.getDay()], count });
+            }
+            const max = Math.max(1, ...days.map(d => d.count));
+            days.forEach((d, idx) => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                const height = Math.max(4, (d.count / max) * 70);
+                bar.style.height = height + 'px';
+                bar.style.animationDelay = (idx * 0.08) + 's';
+                bar.innerHTML = `
+                    <div class="chart-bar-value">${d.count}</div>
+                    <div class="chart-bar-label">${d.label}</div>
+                `;
+                bars.appendChild(bar);
+            });
+        }
+
+        function renderAchievements() {
+            const grid = document.getElementById('achievements-grid');
+            grid.innerHTML = '';
+
+            const myArticles = articles.filter(a => a.author === currentUser);
+            const myArticlesCount = myArticles.length;
+            const totalLikes = myArticles.reduce((s, a) => s + (likes[a.id] ? 1 : 0), 0);
+            const myComments = Object.values(comments).flat().filter(c => c.author === currentUser).length;
+            const totalViews = myArticles.reduce((s, a) => s + (views[a.id] || 0), 0);
+            const subscriptionsCount = Object.keys(subscriptions[currentUser] || {}).filter(k => subscriptions[currentUser][k]).length;
+            const bookmarksCount = Object.keys(bookmarks).filter(k => bookmarks[k]).length;
+
+            const sorted = [...articles].sort((a, b) => getPopularity(b.id) - getPopularity(a.id));
+            const isTop = sorted.length > 0 && myArticles.some(a => a.id === sorted[0].id);
+
+            const stats = { myArticles: myArticlesCount, totalLikes, myComments, totalViews, subscriptionsCount, bookmarksCount, isTop };
+
+            ACHIEVEMENTS.forEach((ach, idx) => {
+                const earned = ach.check(stats);
+                const div = document.createElement('div');
+                div.className = 'achievement ' + (earned ? 'earned' : 'locked');
+                div.style.animationDelay = (idx * 0.06) + 's';
+                div.innerHTML = `
+                    <div class="achievement-icon">${ach.icon}</div>
+                    <div class="achievement-title">${ach.title}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        window.pickAvatar = function(emoji, el) {
+            soundClick();
+            pendingAvatar = emoji;
+            document.getElementById('profile-avatar-big').textContent = emoji;
+            document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+        };
+
+        window.saveProfile = function() {
+            const name = document.getElementById('profile-name-input').value.trim() || currentUser || 'Гость';
+            profile.name = name;
+            profile.avatar = pendingAvatar;
+
+            if (currentUser && accounts[currentUser]) {
+                accounts[currentUser].name = name;
+                accounts[currentUser].avatar = pendingAvatar;
+                saveData();
+            }
+
+            updateUserDisplay();
+            soundSave();
+            launchConfetti();
+            document.getElementById('profile-name-display').textContent = name;
+        };
+
+        function getPopularity(id) {
+            const l = likes[id] ? 1 : 0;
+            const c = (comments[id] || []).length;
+            const v = views[id] || 0;
+            return l * 5 + c * 3 + v * 1;
+        }
+
+        window.globalSearch = function(query) {
+            query = query.toLowerCase().trim();
+            if (!query) return;
+            window.showAllArticles();
+            setTimeout(() => {
+                document.getElementById('search-input').value = query;
+                applyFilters();
+            }, 120);
+        };
+
+        function renderFeatured() {
+            const sorted = [...articles].sort((a, b) => getPopularity(b.id) - getPopularity(a.id));
+            const top = sorted.slice(0, 3);
+
+            const grid = document.getElementById('featured-grid');
+            grid.innerHTML = '';
+
+            if (top.length === 0) {
+                grid.innerHTML = '<p style="color:#c8d4e3; padding:20px; text-align:center;">Пока нет статей</p>';
+                return;
+            }
+
+            if (top.length === 1) {
+                const left = document.createElement('div');
+                left.className = 'featured-left';
+                left.style.gridColumn = 'span 2';
+                const leftCard = document.createElement('div');
+                leftCard.className = 'featured-card';
+                leftCard.onclick = () => openArticle(top[0].id);
+                leftCard.innerHTML = makeFeaturedCardInner(top[0]);
+                left.appendChild(leftCard);
+                grid.appendChild(left);
+                return;
+            }
+
+            const left = document.createElement('div');
+            left.className = 'featured-left';
+            const leftCard = document.createElement('div');
+            leftCard.className = 'featured-card';
+            leftCard.onclick = () => openArticle(top[0].id);
+            leftCard.innerHTML = makeFeaturedCardInner(top[0]);
+            left.appendChild(leftCard);
+            grid.appendChild(left);
+
+            for (let i = 1; i < top.length; i++) {
+                const card = document.createElement('div');
+                card.className = 'featured-card';
+                card.onclick = () => openArticle(top[i].id);
+                card.innerHTML = makeFeaturedCardInner(top[i]);
+                grid.appendChild(card);
+            }
+        }
+
+        function makeFeaturedCardInner(a) {
+            const pop = getPopularity(a.id);
+            const isHot = pop > 0;
+            const coverStyle = a.cover.type === 'img' 
+                ? `style="background-image:url('${a.cover.value}'); font-size:0;"` 
+                : '';
+            const coverContent = a.cover.type === 'img' ? '' : a.cover.value;
+
+            return `
+                <div>
+                    <div class="featured-cover" ${coverStyle}>${coverContent}</div>
+                    <div class="featured-title">${a.title}</div>
+                    <div class="featured-desc">${a.desc}</div>
+                </div>
+                <div>
+                    <div class="featured-stats">
+                        <span>👁 ${views[a.id] || 0}</span>
+                        <span>❤️ ${likes[a.id] ? 1 : 0}</span>
+                        <span>💬 ${(comments[a.id] || []).length}</span>
+                        ${isHot ? '<span class="featured-hot">🔥 ТОП</span>' : ''}
+                    </div>
+                    <div class="featured-date">${formatDate(a.date)}</div>
+                </div>
+            `;
+        }
+
+        window.setCategory = function(cat, el) {
+            soundClick();
+            currentCategory = cat;
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            applyFilters();
+        };
+
+        function applyFilters() {
+            const query = (document.getElementById('search-input').value || '').toLowerCase().trim();
+            const sort = document.getElementById('sort-select').value;
+
+            let filtered = articles.filter(a => {
+                if (currentCategory !== 'all' && a.category !== currentCategory) return false;
+                if (query && !a.title.toLowerCase().includes(query) && !a.text.toLowerCase().includes(query) && !a.desc.toLowerCase().includes(query)) return false;
+                return true;
+            });
+
+            if (sort === 'popular') filtered.sort((a, b) => getPopularity(b.id) - getPopularity(a.id));
+            else if (sort === 'likes') filtered.sort((a, b) => (likes[b.id] ? 1 : 0) - (likes[a.id] ? 1 : 0));
+            else if (sort === 'views') filtered.sort((a, b) => (views[b.id] || 0) - (views[a.id] || 0));
+            else filtered.sort((a, b) => articles.indexOf(a) - articles.indexOf(b));
+
+            const list = document.getElementById('articles-list');
+            list.innerHTML = '';
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<p style="color:#9aa8bb; text-align:center; padding:20px;">Ничего не найдено 🤔</p>';
+                return;
+            }
+
+            filtered.forEach(a => list.appendChild(makeArticleCard(a, 'articles')));
+        }
+
+        function renderSubscriptions() {
+            const list = document.getElementById('subscriptions-list');
+            list.innerHTML = '';
+            const mySubs = subscriptions[currentUser] || {};
+            const subbedAuthors = Object.keys(mySubs).filter(u => mySubs[u]);
+            const subArticles = articles.filter(a => subbedAuthors.includes(a.author));
+
+            if (subArticles.length === 0) {
+                list.innerHTML = '<p style="color:#9aa8bb; text-align:center; padding:20px;">Ты ещё ни на кого не подписан.<br>Открой любую статью, нажми на автора и подпишись.</p>';
+                return;
+            }
+
+            subArticles.forEach(a => list.appendChild(makeArticleCard(a, 'subscriptions')));
+        }
+
+        function renderReadLater() {
+            const list = document.getElementById('read-later-list');
+            list.innerHTML = '';
+            const items = articles.filter(a => readLater[a.id]);
+            if (items.length === 0) {
+                list.innerHTML = '<p style="color:#9aa8bb; text-align:center; padding:20px;">Список пуст.</p>';
+                return;
+            }
+            items.forEach(a => list.appendChild(makeArticleCard(a, 'read-later')));
+        }
+
+        function renderSaved() {
+            const list = document.getElementById('saved-list');
+            list.innerHTML = '';
+            const saved = articles.filter(a => bookmarks[a.id]);
+            if (saved.length === 0) {
+                list.innerHTML = '<p style="color:#9aa8bb; text-align:center; padding:20px;">Ты ещё не сохранил ни одной статьи.</p>';
+                return;
+            }
+            saved.forEach(a => list.appendChild(makeArticleCard(a, 'saved')));
+        }
+
+        function makeArticleCard(a, from) {
+            const card = document.createElement('div');
+            card.className = 'article-card';
+            card.onclick = () => {
+                previousScreen = from;
+                openArticle(a.id);
+            };
+
+            const coverHtml = a.cover.type === 'img'
+                ? `<div class="article-cover-small" style="background-image:url('${a.cover.value}')"></div>`
+                : `<div class="article-emoji">${a.cover.value}</div>`;
+
+            const catName = CATEGORY_NAMES[a.category] || '';
+
+            card.innerHTML = `
+                ${coverHtml}
+                <div class="article-info">
+                    <div class="article-title">${a.title}</div>
+                    <div class="article-desc">${a.desc}</div>
+                    <div class="article-stats">
+                        <span>👁 ${views[a.id] || 0}</span>
+                        <span>❤️ ${likes[a.id] ? 1 : 0}</span>
+                        <span>💬 ${(comments[a.id] || []).length}</span>
+                    </div>
+                    <div class="article-date">${formatDate(a.date)} ${catName ? '• ' + catName : ''}</div>
+                </div>
+                <button class="btn-bookmark ${bookmarks[a.id] ? 'saved' : ''}" 
+                        onclick="event.stopPropagation(); window.toggleBookmark('${a.id}', this);">
+                    ${bookmarks[a.id] ? '⭐' : '☆'}
+                </button>
+            `;
+            return card;
+        }
+
+        function openArticle(id) {
+            soundClick();
+            currentArticleId = id;
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+
+            if (currentUser) {
+                if (!viewedByMe[currentUser]) viewedByMe[currentUser] = {};
+                if (!viewedByMe[currentUser][id]) {
+                    views[id] = (views[id] || 0) + 1;
+                    viewedByMe[currentUser][id] = true;
+                    saveData();
+                }
+            }
+
+            const coverEl = document.getElementById('view-cover');
+            if (article.cover.type === 'img') {
+                coverEl.style.backgroundImage = `url('${article.cover.value}')`;
+                coverEl.textContent = '';
+                coverEl.style.fontSize = '0';
+            } else {
+                coverEl.style.backgroundImage = '';
+                coverEl.textContent = article.cover.value;
+                coverEl.style.fontSize = '72px';
+            }
+
+            document.getElementById('view-title').textContent = article.title;
+            document.getElementById('view-date').textContent = formatDate(article.date) + ' • ' + (CATEGORY_NAMES[article.category] || '');
+
+            const authorLinkEl = document.getElementById('view-author-link');
+            if (article.author && article.author !== 'system') {
+                const authorAcc = accounts[article.author];
+                const authorName = authorAcc ? (authorAcc.name || article.author) : article.author;
+                const authorAvatar = authorAcc ? (authorAcc.avatar || '👤') : '👤';
+                authorLinkEl.innerHTML = `
+                    <div style="text-align:center;">
+                        <span class="author-link" onclick="window.showAuthorProfile('${article.author}')">
+                            <span class="author-link-avatar">${authorAvatar}</span>
+                            <span>${escapeHtml(authorName)}</span>
+                        </span>
+                    </div>
+                `;
+            } else {
+                authorLinkEl.innerHTML = '';
+            }
+
+            document.getElementById('view-text').innerHTML = article.text
+                .split('\n\n').map(p => `<p>${p}</p>`).join('');
+
+            renderArticleActions(article);
+            renderArticleStats();
+            renderSubscribeButton(article);
+            renderComments();
+
+            document.getElementById('comment-my-avatar').textContent = profile.avatar;
+            document.getElementById('comment-my-name').textContent = profile.name;
+
+            hideAll(); setWide(true);
+            revealScreen('article-view-screen');
+
+            document.getElementById('reading-progress').style.width = '0%';
+        }
+
+        function renderArticleActions(article) {
+            const actions = document.getElementById('article-actions');
+            if (article.author === currentUser && currentUser) {
+                actions.innerHTML = `
+                    <button class="article-action-btn" onclick="window.editArticle('${article.id}')">✏️ Редактировать</button>
+                    <button class="article-action-btn danger" onclick="window.deleteArticle('${article.id}')">🗑️ Удалить</button>
+                `;
+            } else {
+                actions.innerHTML = '';
+            }
+        }
+
+        window.editArticle = function(id) {
+            soundClick();
+            const a = articles.find(x => x.id === id);
+            if (!a || a.author !== currentUser) return;
+
+            editingArticleId = id;
+            hideAll(); setWide(true);
+            document.getElementById('editor-title-h2').textContent = '✏️ Редактирование';
+            document.getElementById('editor-title').value = a.title;
+            document.getElementById('editor-desc').value = a.desc;
+            document.getElementById('editor-text').value = a.text;
+            document.getElementById('editor-category').value = a.category;
+
+            selectedCover = { ...a.cover };
+            document.querySelectorAll('.cover-option').forEach(el => {
+                const type = el.dataset.type;
+                const val = el.dataset.value;
+                el.classList.toggle('selected', type === a.cover.type && val === a.cover.value);
+            });
+
+            revealScreen('editor-screen');
+        };
+
+        window.deleteArticle = function(id) {
+            soundClick();
+            showConfirm('🗑️', 'Удалить статью?', 'Это действие нельзя отменить.', 'Удалить', () => {
+                articles = articles.filter(a => a.id !== id);
+                delete likes[id];
+                delete views[id];
+                delete comments[id];
+                delete readLater[id];
+                saveData();
+                soundBack();
+                window.showAllArticles();
+            });
+        };
+
+        function renderArticleStats() {
+            const id = currentArticleId;
+            const stats = document.getElementById('view-stats');
+            stats.innerHTML = `
+                <button class="${likes[id] ? 'liked' : ''}" onclick="window.toggleLike('${id}')">
+                    ${likes[id] ? '❤️' : '🤍'} <span>${likes[id] ? 1 : 0}</span>
+                </button>
+                <button class="${bookmarks[id] ? 'bookmarked' : ''}" onclick="window.toggleBookmarkView('${id}')">
+                    ${bookmarks[id] ? '⭐ Сохранено' : '☆ Сохранить'}
+                </button>
+                <button class="${readLater[id] ? 'bookmarked' : ''}" onclick="window.toggleReadLater('${id}')">
+                    ${readLater[id] ? '📑 В списке' : '📑 Читать позже'}
+                </button>
+                <span>👁 ${views[id] || 0}</span>
+            `;
+        }
+
+        window.toggleReadLater = function(id) {
+            readLater[id] = !readLater[id];
+            if (readLater[id]) { soundBookmark(); } else soundClick();
+            saveData();
+            renderArticleStats();
+        };
+
+        function renderSubscribeButton(article) {
+            const btn = document.getElementById('subscribe-btn');
+            const author = article.author;
+
+            if (!author || author === currentUser || author === 'system') {
+                btn.classList.add('hidden');
+                return;
+            }
+            btn.classList.remove('hidden');
+
+            if (!subscriptions[currentUser]) subscriptions[currentUser] = {};
+            const isSubbed = subscriptions[currentUser][author];
+            btn.textContent = isSubbed ? '✓ Подписан на автора' : '+ Подписаться на автора';
+            btn.classList.toggle('subscribed', isSubbed);
+        }
+
+        window.toggleSubscribe = function() {
+            soundClick();
+            const article = articles.find(a => a.id === currentArticleId);
+            if (!article || !article.author) return;
+            const author = article.author;
+            if (!subscriptions[currentUser]) subscriptions[currentUser] = {};
+            subscriptions[currentUser][author] = !subscriptions[currentUser][author];
+            if (subscriptions[currentUser][author]) {
+                soundSave();
+                addNotification(author, `👥 ${profile.name} подписался на тебя`, null);
+            }
+            saveData();
+            renderSubscribeButton(article);
+        };
+
+        window.toggleLike = function(id) {
+            likes[id] = !likes[id];
+            if (likes[id]) {
+                soundLike();
+                trackActivity();
+                const article = articles.find(a => a.id === id);
+                if (article && article.author && article.author !== 'system') {
+                    addNotification(article.author, `❤️ ${profile.name} лайкнул «${article.title}»`, id);
+                }
+            } else {
+                soundClick();
+            }
+            saveData();
+            renderArticleStats();
+        };
+
+        window.toggleBookmark = function(id, btn) {
+            event.stopPropagation();
+            bookmarks[id] = !bookmarks[id];
+            if (bookmarks[id]) soundBookmark();
+            else soundClick();
+            saveData();
+            if (btn) {
+                btn.classList.toggle('saved', bookmarks[id]);
+                btn.textContent = bookmarks[id] ? '⭐' : '☆';
+            }
+        };
+
+        window.toggleBookmarkView = function(id) {
+            bookmarks[id] = !bookmarks[id];
+            if (bookmarks[id]) { soundBookmark(); launchConfetti(); }
+            else soundClick();
+            saveData();
+            renderArticleStats();
+        };
+
+        function renderComments() {
+            const id = currentArticleId;
+            const list = document.getElementById('comment-list');
+            const countEl = document.getElementById('comments-count');
+            const arr = comments[id] || [];
+            countEl.textContent = `(${arr.length})`;
+            list.innerHTML = '';
+            if (arr.length === 0) {
+                list.innerHTML = '<p class="no-comments">Комментариев пока нет. Будь первым!</p>';
+                return;
+            }
+            arr.forEach((c, idx) => {
+                let displayName = c.name;
+                let displayAvatar = c.avatar || '👤';
+                if (c.author && accounts[c.author]) {
+                    displayName = accounts[c.author].name || c.name;
+                    displayAvatar = accounts[c.author].avatar || displayAvatar;
+                }
+
+                const authorClickable = c.author && c.author !== 'system' && accounts[c.author];
+                const authorOnclick = authorClickable ? `onclick="event.stopPropagation(); window.showAuthorProfile('${c.author}')"` : '';
+
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.style.animationDelay = (idx * 0.08) + 's';
+                item.innerHTML = `
+                    <div class="comment-avatar" ${authorOnclick}>${displayAvatar}</div>
+                    <div class="comment-body">
+                        <div class="comment-header">
+                            <span class="comment-author" ${authorOnclick}>${escapeHtml(displayName)}</span>
+                            <span class="comment-date">${c.date}</span>
+                        </div>
+                        <div class="comment-text">${escapeHtml(c.text)}</div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        window.addComment = function() {
+            const textEl = document.getElementById('comment-text');
+            const text = textEl.value.trim();
+
+            if (!text) { soundError(); alert('Напиши комментарий!'); return; }
+
+            if (!comments[currentArticleId]) comments[currentArticleId] = [];
+            const date = new Date().toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+            comments[currentArticleId].push({
+                name: profile.name,
+                avatar: profile.avatar,
+                text, date,
+                author: currentUser
+            });
+            saveData();
+            soundSave();
+            trackActivity();
+            textEl.value = '';
+            renderComments();
+
+            const article = articles.find(a => a.id === currentArticleId);
+            if (article && article.author && article.author !== 'system') {
+                addNotification(article.author, `💬 ${profile.name} оставил комментарий к «${article.title}»`, currentArticleId);
+            }
+        };
+
+        function escapeHtml(s) {
+            return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        }
+
+        window.backFromArticle = function() {
+            soundBack();
+            if (previousScreen === 'articles') window.showAllArticles();
+            else if (previousScreen === 'saved') window.showSavedArticles();
+            else if (previousScreen === 'subscriptions') window.showSubscriptions();
+            else if (previousScreen === 'read-later') window.showReadLater();
+            else if (previousScreen === 'author') {
+                if (viewingAuthor) window.showAuthorProfile(viewingAuthor);
+                else window.showAllArticles();
+            }
+            else window.showStart();
+        };
+
+        window.pickCover = function(el) {
+            soundClick();
+            selectedCover = { type: el.dataset.type, value: el.dataset.value };
+            document.querySelectorAll('.cover-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+        };
+
+        window.saveArticle = function() {
+            const title = document.getElementById('editor-title').value.trim();
+            const desc = document.getElementById('editor-desc').value.trim();
+            const text = document.getElementById('editor-text').value.trim();
+            const category = document.getElementById('editor-category').value;
+
+            if (!title || !text) {
+                soundError();
+                alert('Заполни хотя бы заголовок и текст статьи!');
+                return;
+            }
+
+            soundSave();
+            launchConfetti();
+            trackActivity();
+
+            if (editingArticleId) {
+                const a = articles.find(x => x.id === editingArticleId);
+                a.title = title;
+                a.desc = desc || 'Без описания';
+                a.text = text;
+                a.category = category;
+                a.cover = { ...selectedCover };
+                a.emoji = selectedCover.type === 'emoji' ? selectedCover.value : '📝';
+                editingArticleId = null;
+                saveData();
+                setTimeout(() => alert('Статья обновлена! ✅'), 300);
+                window.showAllArticles();
+            } else {
+                const date = new Date().toLocaleDateString('ru-RU');
+                const id = 'a' + Date.now();
+                articles.unshift({
+                    id,
+                    emoji: selectedCover.type === 'emoji' ? selectedCover.value : '📝',
+                    cover: { ...selectedCover },
+                    title,
+                    desc: desc || 'Без описания',
+                    date, text, category,
+                    author: currentUser
+                });
+                views[id] = 0;
+                if (currentUser) {
+                    if (!viewedByMe[currentUser]) viewedByMe[currentUser] = {};
+                    viewedByMe[currentUser][id] = true;
+                }
+                saveData();
+                setTimeout(() => alert('Статья сохранена! ✅'), 300);
+                window.showAllArticles();
+            }
+        };
+
+        window.setTheme = function(theme, el) {
+            soundClick();
+            ['theme-blue','theme-sunset','theme-night','theme-matrix','theme-pink']
+                .forEach(t => document.body.classList.remove(t));
+            document.body.classList.add(theme);
+            document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            safeStorage.setItem('aw_manual_theme', '1');
+        };
+
+        window.setMode = function(mode) {
+            soundClick();
+            document.body.classList.remove('mode-dark', 'mode-light');
+            document.body.classList.add('mode-' + mode);
+            document.getElementById('mode-dark-btn').classList.toggle('active', mode === 'dark');
+            document.getElementById('mode-light-btn').classList.toggle('active', mode === 'light');
+            safeStorage.setItem('aw_mode', mode);
+        };
+
+        function autoThemeByTime() {
+            const h = new Date().getHours();
+            let theme;
+            if (h >= 5 && h < 11) theme = 'theme-pink';
+            else if (h >= 11 && h < 17) theme = 'theme-blue';
+            else if (h >= 17 && h < 22) theme = 'theme-sunset';
+            else theme = 'theme-night';
+            ['theme-blue','theme-sunset','theme-night','theme-matrix','theme-pink']
+                .forEach(t => document.body.classList.remove(t));
+            document.body.classList.add(theme);
+            document.querySelectorAll('.theme-swatch').forEach(s => {
+                s.classList.toggle('active', s.classList.contains(theme + '-sw'));
+            });
+        }
+
+        if (!safeStorage.getItem('aw_manual_theme')) autoThemeByTime();
+
+        let easterEggCooldown = false;
+        window.easterEgg = function(event) {
+            event.stopPropagation();
+            if (easterEggCooldown) return;
+            easterEggCooldown = true;
+            const logo = document.getElementById('site-logo');
+            logo.classList.remove('shake');
+            void logo.offsetWidth;
+            logo.classList.add('shake');
+            soundEasterEgg();
+            setTimeout(() => {
+                logo.classList.remove('shake');
+                easterEggCooldown = false;
+            }, 700);
+        };
+
+        function updateReadingProgress() {
+            const viewScreen = document.getElementById('article-view-screen');
+            if (viewScreen.classList.contains('hidden')) {
+                document.getElementById('reading-progress').style.width = '0%';
+                return;
+            }
+            const content = document.querySelector('.content');
+            const scrollTop = content.scrollTop;
+            const scrollHeight = content.scrollHeight - content.clientHeight;
+            const percent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+            document.getElementById('reading-progress').style.width = percent + '%';
+        }
+
+        const contentEl = document.querySelector('.content');
+        if (contentEl) contentEl.addEventListener('scroll', updateReadingProgress);
+
+        if (currentUser && accounts[currentUser]) {
+            profile = {
+                name: accounts[currentUser].name || currentUser,
+                avatar: accounts[currentUser].avatar || '👤'
+            };
+            enterSite();
+        } else {
+            document.getElementById('auth-screen').classList.remove('hidden');
+        }
+    }
+    </script>
+</body>
+</html>
